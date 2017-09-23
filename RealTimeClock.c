@@ -1,5 +1,4 @@
 
-#include "I2C.h"
 #include "RealTimeClock.h"
 
 void RTC_Init()
@@ -63,5 +62,5 @@ void RTC_WriteData(unsigned char slaveAddress, unsigned char dataRegister, unsig
 
 unsigned char RTC_ReadData(unsigned char slaveAddress, unsigned char dataRegister)
 {
-	I2C_ReadData(slaveAddress, dataRegister);
+	return I2C_ReadData(slaveAddress, dataRegister);
 }

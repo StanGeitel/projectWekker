@@ -8,6 +8,8 @@
 #ifndef REALTIMECLOCK_H_
 #define REALTIMECLOCK_H_
 
+#include "I2C.h"
+
 #define RTC_Secondes_Register  	0x00
 #define RTC_Minuten_Register   	0x01
 #define RTC_Hours_Register 	  	0x02

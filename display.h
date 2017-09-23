@@ -8,6 +8,8 @@
 #ifndef DISPLAY_H_
 #define DISPLAY_H_
 
+#include "LPC1769.h"
+
 //add correct gpio pins	 	pins on shift register
 #define GPIO		1
 #define SHCLK 		2		//11 shift register clock
@@ -18,9 +20,9 @@
 #define RCRS		23		//Reset of ripple counter
 #define DMEN		24		//JP1_2 is enable for demultiplexer
 
-unsigned int rows[7];
+int rows[7];
 
-void initDisplay(void);
+void displayInit(void);
 void writeMessage(char message[5]);
 void setMessage(char message[5]);
 void setCharacter(char c, int pos);

@@ -6,9 +6,8 @@
  */
 
 #include "display.h"
-#include "LPC1769.h"
 
-void initDisplay(void){
+void displayInit(void){
 	clearDisplay();
 }
 
@@ -17,7 +16,7 @@ void writeMessage(char message[5]){
 	writeToDisplay();
 }
 
-void set_Message(char message[5]){
+void setMessage(char message[5]){
 	for(int i = 5; i > 0; i--){
 		setCharacter(message[i], i);
 	}

@@ -1,6 +1,5 @@
 #include "LPC1769.h"
 
-
 void GPIO_Init(unsigned char port, int DIR,int pins){
 	GPIO_DIR(port) = DIR;
 }
