@@ -3,7 +3,6 @@
 #define LPC1769_H_
 
 #define PCONP		(*(unsigned int *)	(0x400FC0C4))
-#define PCLKSEL		(*(unsigned long *)	(0x400FC1A8))	//may not work!!!(test it NOW)
 #define PCLKSEL0	(*(unsigned int *)	(0x400FC1A8))
 #define PCLKSEL1	(*(unsigned int *)	(0x400FC1AC))
 #define ISER0		(*(unsigned int *)	(0xE000E100))
@@ -39,7 +38,6 @@
 #define TIMER1	1
 #define TIMER2	23
 #define TIMER3	24
-#define PWM		5
 #define	MR0		0
 #define	MR1		1
 #define	MR2		2
@@ -52,8 +50,8 @@
 #define CR2		2
 #define CR3		3
 
-#define T(n) (0x40004000 + 0x4000 * n)
-#define T_IR(timer) 	(*(unsigned int *)	T(timer))
+#define T(n) (0x40004000 + (0x4000 * n))
+#define T_IR(timer) 	(*(unsigned int *)	(T(timer)))
 #define T_TCR(timer)	(*(unsigned int *)	(T(timer) + 0x4))
 #define T_TC(timer)		(*(unsigned int *)	(T(timer) + 0x8))
 #define T_PR(timer) 	(*(unsigned int *)	(T(timer) + 0xC))
@@ -99,6 +97,18 @@ void timer_SetMR(unsigned char timer, unsigned char MR, short count);
 
 #define GPIO0_IntPins		0x7FFF8FFF
 #define GPIO2_IntPins		0x3FF
+
+void GPIO_Init(unsigned char port, int DIR, int pins);
+void GPIO_Int_Init(void);
+void GPIO_Set(unsigned char port, int pins);
+void GPIO_Clear(unsigned char port, int pins);
+void GPIO_Toggle(unsigned char port,int pins);
+int GPIO_Read(unsigned char port);
+void GPIO_Int_Clear(unsigned char port, int pins);
+void GPIO_Int_EnableR(unsigned char port, int pins);
+void GPIO_Int_EnableF(unsigned char port, int pins);
+int GPIO_Int_StatusR(unsigned char port, int pins);
+int GPIO_Int_StatusF(unsigned char port, int pins);
 
 #endif
 
