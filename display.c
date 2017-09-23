@@ -93,7 +93,6 @@ void writeGpio(int pin, int state){
 
 void setCharacter(char c, int pos){
 	clearCharacter(pos);
-	getCharacterData(c);
 	int data[7];
 	switch(c){
 	case 48:		{data[0]=0x1F; data[1]=0x11; data[2]=0x11; data[3]=0x11; data[4]=0x11; data[5]=0x11; data[6]=0x1F;}	// 0
@@ -116,6 +115,8 @@ void setCharacter(char c, int pos){
 	break;
 	case 57:		{data[0]=0x1F; data[1]=0x11; data[2]=0x11; data[3]=0x1F; data[4]=0x01; data[5]=0x01; data[6]=0x1F;}	// 9
 	break;
+	case 58:		{data[0]=0x00; data[1]=0x04; data[2]=0x00; data[3]=0x00; data[4]=0x00; data[5]=0x04; data[6]=0x00;}	// :
+	break;
 	case 43:		{data[0]=0x00; data[1]=0x04; data[2]=0x04; data[3]=0x1F; data[4]=0x04; data[5]=0x04; data[6]=0x00;}	// +
 	break;
 	case 45:		{data[0]=0x00; data[1]=0x00; data[2]=0x00; data[3]=0x1F; data[4]=0x00; data[5]=0x00; data[6]=0x00;}	// -
@@ -124,6 +125,7 @@ void setCharacter(char c, int pos){
 	break;
 	case 47:		{data[0]=0x00; data[1]=0x04; data[2]=0x00; data[3]=0x1F; data[4]=0x00; data[5]=0x04; data[6]=0x00;}	// %
 	break;
+
 	}
 
 	for(int i = 0; i < 7; i++){

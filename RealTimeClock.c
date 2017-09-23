@@ -1,19 +1,6 @@
-#define RTC_Secondes_Register  	0x00
-#define RTC_Minuten_Register   	0x01
-#define RTC_Hours_Register 	  	0x02
-#define RTC_Day_Register 		0x03
-#define RTC_Date_Register 	  	0x04
-#define RTC_Month_Register   	0x05
-#define RTC_Year_Register   	0x06
-#define RTC_Control_Register   	0x07
-#define RTC_SlaveAddress		0xD0
 
 #include "I2C.h"
 #include "RealTimeClock.h"
-#include <stdio.h>
-
-char minutes = 0;
-char hours = 0;
 
 void RTC_Init()
 {
