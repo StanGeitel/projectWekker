@@ -66,15 +66,14 @@ unsigned char RTC_ReadData(unsigned char slaveAddress, unsigned char dataRegiste
 }
 
 void setTime(void){
-	char (*pTime)[5] = &time;
-	(*pTime)[0] = (char)RTC_GetMinutes() % 10;
-	(*pTime)[1] = (char)RTC_GetMinutes() / 10;
-	(*pTime)[2] = ':';
-	(*pTime)[3] = (char)RTC_GetHours() % 10;
-	(*pTime)[4] = (char)RTC_GetHours() / 10;
+	rtcTime[0] = (char)RTC_GetMinutes() % 10;
+	rtcTime[1] = (char)RTC_GetMinutes() / 10;
+	rtcTime[2] = ':';
+	rtcTime[3] = (char)RTC_GetHours() % 10;
+	rtcTime[4] = (char)RTC_GetHours() / 10;
 }
 
 char* getTime(void){
-	char (*pTime)[5] = &time;
+	char (*pTime)[5] = &rtcTime;
 	return (*pTime);
 }

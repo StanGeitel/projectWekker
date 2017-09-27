@@ -35,7 +35,7 @@ void writeToDisplay(void){
 void writeDataToShift(int row){
 	for(int i = 0; i < 32; i++){
 		writeGpio(SHCLK, 0);
-		writeGpio(SRD, ((pBuffer->pBuffer[row]) & (0x1 << i)));
+		writeGpio(SRD, ((*pBuffer)[row] & (0x1 << i)));
 		writeGpio(SHCLK, 1);
 	}
 	writeGpio(SHCLK, 0);
@@ -81,7 +81,7 @@ void clearDisplay(void){
 
 void clearCharacter(int pos){
 	for(int i = 0; i < 7; i++){
-		pBuffer[i] &= ~(0x1F << (pos * 5));
+		(*pBuffer)[i] &= ~(0x1F << (pos * 5));
 	}
 }
 
@@ -139,6 +139,6 @@ void setCharacter(char c, int pos){
 	break;
 	}
 	for(int i = 0; i < 7; i++){
-		pBuffer[i] |= (data[i] << (pos * 5));
+		(*pBuffer)[i] |= (data[i] << (pos * 5));
 	}
 }

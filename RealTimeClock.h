@@ -20,6 +20,8 @@
 #define RTC_Control_Register   	0x07
 #define RTC_SlaveAddress		0xD0
 
+char rtcTime[5];
+
 void RTC_Init();
 void RTC_WriteData(unsigned char slaveAddress, unsigned char dataRegister, unsigned char data);
 unsigned char RTC_ReadData(unsigned char slaveAddress, unsigned char dataRegister);
@@ -29,6 +31,6 @@ void RTC_SetSQWOutput(int Hz);
 void setTime(void);
 char* getTime(void);
 
-char time[5];
+
 
 #endif /* REALTIMECLOCK_H_ */
