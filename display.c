@@ -9,6 +9,7 @@
 
 void displayInit(void){
 	clearDisplay();
+	pBuffer = &buffer1;
 }
 
 void writeMessage(char message[5]){
@@ -33,8 +34,11 @@ void writeToDisplay(void){
 
 void writeDataToShift(int row){
 	for(int i = 0; i < 32; i++){
-		writeGpio(SRD, (rows[row] & (0x1 << i)));
+		writeGpio(SHCLK, 0);
+		writeGpio(SRD, ((pBuffer->pBuffer[row]) & (0x1 << i)));
+		writeGpio(SHCLK, 1);
 	}
+	writeGpio(SHCLK, 0);
 }
 
 void writeDataToStorage(void){
@@ -77,7 +81,7 @@ void clearDisplay(void){
 
 void clearCharacter(int pos){
 	for(int i = 0; i < 7; i++){
-		rows[i] &= ~(0x1F << (pos * 5));
+		pBuffer[i] &= ~(0x1F << (pos * 5));
 	}
 }
 
@@ -90,9 +94,18 @@ void writeGpio(int pin, int state){
 	}
 }
 
+void swapBuffer(void){
+	if(pBuffer == &buffer1){
+		pBuffer = &buffer2;
+	}
+	else{
+		pBuffer = &buffer1;
+	}
+}
+
 void setCharacter(char c, int pos){
 	clearCharacter(pos);
-	int data[7];
+	char data[7];
 	switch(c){
 	case 48:		{data[0]=0x1F; data[1]=0x11; data[2]=0x11; data[3]=0x11; data[4]=0x11; data[5]=0x11; data[6]=0x1F;}	// 0
 	break;
@@ -124,10 +137,8 @@ void setCharacter(char c, int pos){
 	break;
 	case 47:		{data[0]=0x00; data[1]=0x04; data[2]=0x00; data[3]=0x1F; data[4]=0x00; data[5]=0x04; data[6]=0x00;}	// %
 	break;
-
 	}
-
 	for(int i = 0; i < 7; i++){
-		rows[i] |= (data[i] << (pos * 5));
+		pBuffer[i] |= (data[i] << (pos * 5));
 	}
 }

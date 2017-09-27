@@ -20,7 +20,9 @@
 #define RCRS		23		//Reset of ripple counter
 #define DMEN		24		//JP1_2 is enable for demultiplexer
 
-int rows[7];
+int buffer1[7];
+int buffer2[7];
+int (*pBuffer)[7];
 
 void displayInit(void);
 void writeMessage(char message[5]);

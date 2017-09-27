@@ -26,8 +26,9 @@ unsigned char RTC_ReadData(unsigned char slaveAddress, unsigned char dataRegiste
 unsigned char RTC_GetMinutes();
 unsigned char RTC_GetHours();
 void RTC_SetSQWOutput(int Hz);
+void setTime(void);
+char* getTime(void);
 
-unsigned char minutes = 0;
-unsigned char hours = 0;
+char time[5];
 
 #endif /* REALTIMECLOCK_H_ */

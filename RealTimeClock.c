@@ -64,3 +64,17 @@ unsigned char RTC_ReadData(unsigned char slaveAddress, unsigned char dataRegiste
 {
 	return I2C_ReadData(slaveAddress, dataRegister);
 }
+
+void setTime(void){
+	char (*pTime)[5] = &time;
+	(*pTime)[0] = (char)RTC_GetMinutes() % 10;
+	(*pTime)[1] = (char)RTC_GetMinutes() / 10;
+	(*pTime)[2] = ':';
+	(*pTime)[3] = (char)RTC_GetHours() % 10;
+	(*pTime)[4] = (char)RTC_GetHours() / 10;
+}
+
+char* getTime(void){
+	char (*pTime)[5] = &time;
+	return (*pTime);
+}
