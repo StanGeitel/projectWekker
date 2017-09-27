@@ -10,10 +10,18 @@
 void displayInit(void){
 	clearDisplay();
 	pBuffer = &buffer1;
+	writeGpio(SHCLK, 0);
+	writeGpio(STCLK, 0);
+	writeGpio(SRMR, 1);
+	writeGpio(RCCLK, 0);
+	writeGpio(RCRS, 0);
+	writeGpio(DMEN, 0);
+
 }
 
 void writeMessage(char message[5]){
 	setMessage(message);
+	swapBuffer();
 	writeToDisplay();
 }
 
@@ -106,7 +114,16 @@ void swapBuffer(void){
 void setCharacter(char c, int pos){
 	clearCharacter(pos);
 	char data[7];
+
 	switch(c){
+	case 42:		{data[0]=0x00; data[1]=0x11; data[2]=0x0A; data[3]=0x04; data[4]=0x0A; data[5]=0x11; data[6]=0x00;}	// x
+	break;
+	case 43:		{data[0]=0x00; data[1]=0x04; data[2]=0x04; data[3]=0x1F; data[4]=0x04; data[5]=0x04; data[6]=0x00;}	// +
+	break;
+	case 45:		{data[0]=0x00; data[1]=0x00; data[2]=0x00; data[3]=0x1F; data[4]=0x00; data[5]=0x00; data[6]=0x00;}	// -
+	break;
+	case 47:		{data[0]=0x00; data[1]=0x04; data[2]=0x00; data[3]=0x1F; data[4]=0x00; data[5]=0x04; data[6]=0x00;}	// %
+	break;
 	case 48:		{data[0]=0x1F; data[1]=0x11; data[2]=0x11; data[3]=0x11; data[4]=0x11; data[5]=0x11; data[6]=0x1F;}	// 0
 	break;
 	case 49:		{data[0]=0x04; data[1]=0x0C; data[2]=0x04; data[3]=0x04; data[4]=0x04; data[5]=0x04; data[6]=0x0E;}	// 1
@@ -129,14 +146,8 @@ void setCharacter(char c, int pos){
 	break;
 	case 58:		{data[0]=0x00; data[1]=0x04; data[2]=0x00; data[3]=0x00; data[4]=0x00; data[5]=0x04; data[6]=0x00;}	// :
 	break;
-	case 43:		{data[0]=0x00; data[1]=0x04; data[2]=0x04; data[3]=0x1F; data[4]=0x04; data[5]=0x04; data[6]=0x00;}	// +
-	break;
-	case 45:		{data[0]=0x00; data[1]=0x00; data[2]=0x00; data[3]=0x1F; data[4]=0x00; data[5]=0x00; data[6]=0x00;}	// -
-	break;
-	case 42:		{data[0]=0x00; data[1]=0x11; data[2]=0x0A; data[3]=0x04; data[4]=0x0A; data[5]=0x11; data[6]=0x00;}	// x
-	break;
-	case 47:		{data[0]=0x00; data[1]=0x04; data[2]=0x00; data[3]=0x1F; data[4]=0x00; data[5]=0x04; data[6]=0x00;}	// %
-	break;
+
+
 	}
 	for(int i = 0; i < 7; i++){
 		(*pBuffer)[i] |= (data[i] << (pos * 5));

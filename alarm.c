@@ -29,7 +29,10 @@ void solveProblem(void){
 	setMessage(pProblem->arr);
 	int userAnswer;
 	do {
-		scanf("%d", &userAnswer); //get an answer via remote
+		do{
+			scanf("%d", &userAnswer); //get an answer via remote
+		}while(!userAnswer);
+
 		if (userAnswer != pProblem->answer) {
 			//volumeUp();
 		}

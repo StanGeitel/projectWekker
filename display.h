@@ -11,14 +11,14 @@
 #include "LPC1769.h"
 
 //add correct gpio pins	 	pins on shift register
-#define GPIO		1
-#define SHCLK 		2		//11 shift register clock
-#define STCLK 		3		//12 storage register clock
-#define SRMR		4		//10 shift register master reset LOW-active
-#define SRD 		5		//14 shift register data input
-#define RCCLK		22		//clock of ripple counter
-#define RCRS		23		//Reset of ripple counter
-#define DMEN		24		//JP1_2 is enable for demultiplexer
+#define GPIO		0
+#define SHCLK 		0		//11 shift register clock
+#define STCLK 		1		//12 storage register clock
+#define SRMR		2		//10 shift register master reset LOW-active
+#define SRD 		3		//14 shift register data input
+#define RCCLK		4		//clock of ripple counter
+#define RCRS		5		//Reset of ripple counter
+#define DMEN		6		//JP1_2 is enable for demultiplexer
 
 int buffer1[7];
 int buffer2[7];
