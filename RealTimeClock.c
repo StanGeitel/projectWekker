@@ -4,18 +4,9 @@
 void RTC_Init()
 {
 	I2C_WriteData(RTC_SlaveAddress, RTC_Secondes_Register, 0x00);
-	delay1(); //change to timer in stead of for loop
 	I2C_WriteData(RTC_SlaveAddress, RTC_Hours_Register, 0x00);
-	delay1();
 	RTC_SetSQWOutput(0);
-	delay1();
 
-	/*read is still in progress*/
-	char a;
-	while(1){
-		a = I2C_ReadData(0xD0, 0x00);
-		printf("data: %d \n", a);
-	}
 }
 
 unsigned char RTC_GetMinutes()
@@ -49,9 +40,6 @@ void RTC_SetSQWOutput(int Hz)
 		case 5: //logic 1
 			RTC_WriteData(RTC_SlaveAddress, RTC_Control_Register, 0x80);
 			break;
-		default:
-			printf("RTC_SetSQWOutput(int Hz) fault! \n");
-			break;
 	}
 }
 
@@ -66,11 +54,12 @@ unsigned char RTC_ReadData(unsigned char slaveAddress, unsigned char dataRegiste
 }
 
 void setTime(void){
-	rtcTime[0] = (char)RTC_GetMinutes() % 10;
-	rtcTime[1] = (char)RTC_GetMinutes() / 10;
-	rtcTime[2] = ':';
-	rtcTime[3] = (char)RTC_GetHours() % 10;
-	rtcTime[4] = (char)RTC_GetHours() / 10;
+	char (*pTime)[5] = &rtcTime;
+	(*pTime)[0] = (char)RTC_GetHours() / 10;
+	(*pTime)[1] = (char)RTC_GetHours() % 10;
+	(*pTime)[2] = ':';
+	(*pTime)[3] = (char)RTC_GetMinutes() / 10;
+	(*pTime)[4] = (char)RTC_GetMinutes() % 10;
 }
 
 char* getTime(void){

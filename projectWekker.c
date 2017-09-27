@@ -17,8 +17,10 @@
 
 int main(void) {
 	alarmInit();
+	char arr[5] = {'0','1',':','3','4'};
+	setMessage(arr);
     while(1) {
-
+    	upRippleCounter();
     }
     return 0 ;
 }
