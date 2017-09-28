@@ -38,7 +38,6 @@
 #define TIMER1	1
 #define TIMER2	23
 #define TIMER3	24
-#define PWM		5
 #define	MR0		0
 #define	MR1		1
 #define	MR2		2
@@ -104,15 +103,24 @@ short timer_GetMR(unsigned char timer, unsigned char MR);
 #define GPIO0_IntPins		0x7FFF8FFF
 #define GPIO2_IntPins		0x3FF
 
+<<<<<<< HEAD
 void GPIO_Int_Init(void);
 void GPIO_SetDIR(unsigned char port, int pins);
 void GPIO_Set(unsigned char port, int pins);
 void GPIO_Clear(unsigned char port, int pins);
 void GPIO_Toggle(unsigned char port, int pins);
+=======
+void GPIO_Init(unsigned char port, int DIR, int pins);
+void GPIO_Int_Init(void);
+void GPIO_Set(unsigned char port, int pins);
+void GPIO_Clear(unsigned char port, int pins);
+void GPIO_Toggle(unsigned char port,int pins);
+>>>>>>> 49824f6e8ade104739feac0e5ebaf2843d7c976f
 int GPIO_Read(unsigned char port);
 void GPIO_Int_Clear(unsigned char port, int pins);
 void GPIO_Int_EnableR(unsigned char port, int pins);
 void GPIO_Int_EnableF(unsigned char port, int pins);
+<<<<<<< HEAD
 void GPIO_Int_DisableR(unsigned char port, int pins);
 void GPIO_Int_DisableF(unsigned char port, int pins);
 int GPIO_Int_StatusR(unsigned char port);
@@ -132,6 +140,10 @@ unsigned char GPIO_Int_Status();
 void SPI_Init();
 void SPI_Write(short data);
 void SPI_Int_Clear(void);
+=======
+int GPIO_Int_StatusR(unsigned char port, int pins);
+int GPIO_Int_StatusF(unsigned char port, int pins);
+>>>>>>> 49824f6e8ade104739feac0e5ebaf2843d7c976f
 
 #endif
 

@@ -1,5 +1,11 @@
 #include "LPC1769.h"
 
+<<<<<<< HEAD
+=======
+void GPIO_Init(unsigned char port, int DIR,int pins){
+	GPIO_DIR(port) = DIR;
+}
+>>>>>>> 49824f6e8ade104739feac0e5ebaf2843d7c976f
 
 void GPIO_Int_Init(void){
 	ISER0 |= 1 << 21;		//enable external interrupt 3
