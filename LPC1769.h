@@ -3,7 +3,6 @@
 #define LPC1769_H_
 
 #define PCONP		(*(unsigned int *)	(0x400FC0C4))
-#define PCLKSEL		(*(unsigned long *)	(0x400FC1A8))	//may not work!!!(test it NOW)
 #define PCLKSEL0	(*(unsigned int *)	(0x400FC1A8))
 #define PCLKSEL1	(*(unsigned int *)	(0x400FC1AC))
 #define ISER0		(*(unsigned int *)	(0xE000E100))
@@ -44,16 +43,16 @@
 #define	MR1		1
 #define	MR2		2
 #define	MR3		3
-#define M4		10
-#define M5		11
-#define M6		12
+#define MR4		10
+#define MR5		11
+#define MR6		12
 #define CR0		0
 #define CR1		1
 #define CR2		2
 #define CR3		3
 
-#define T(n) (0x40004000 + 0x4000 * n)
-#define T_IR(timer) 	(*(unsigned int *)	T(timer))
+#define T(n) (0x40004000 + (0x4000 * n))
+#define T_IR(timer) 	(*(unsigned int *)	(T(timer)))
 #define T_TCR(timer)	(*(unsigned int *)	(T(timer) + 0x4))
 #define T_TC(timer)		(*(unsigned int *)	(T(timer) + 0x8))
 #define T_PR(timer) 	(*(unsigned int *)	(T(timer) + 0xC))
@@ -64,9 +63,8 @@
 #define T_CR(timer, CR) (*(unsigned int *)	(T(timer) + 0x2C + (CR * 0x4)))
 #define T_EMR(timer) 	(*(unsigned int *)	(T(timer) + 0x3C))
 #define T_CTCR(timer) 	(*(unsigned int *)	(T(timer) + 0x70))
-#define PCR				(*(unsigned int *)	(T(timer) + 0x4C))
-#define LER				(*(unsigned int *)	(T(timer) + 0x50))
-#define CTCR			(*(unsigned int *)	(T(timer) + 0x70))
+#define PWM1PCR				(*(unsigned int *)	(0x4001804C))
+#define PWM1LER				(*(unsigned int *)	(0x40018050))
 
 void timer_Init(unsigned char timer, int prescaler);
 void timer_ClearIR(unsigned char timer);
@@ -76,6 +74,12 @@ void timer_Reset(unsigned char timer);
 void timer_SetPR(unsigned char timer, int prescaler);
 void timer_SetMCR(unsigned char timer, unsigned char MR, unsigned char data);
 void timer_SetMR(unsigned char timer, unsigned char MR, short count);
+void timer_EnablePWM(unsigned char channels);
+void timer_SetPWMMR(unsigned char MR, unsigned char count);
+int timer_GetCount(unsigned char timer);
+void timer_IncreasePWMMR(unsigned char MR);
+void timer_DecreasePWMMR(unsigned char MR);
+short timer_GetMR(unsigned char timer, unsigned char MR);
 
 
 
@@ -90,15 +94,44 @@ void timer_SetMR(unsigned char timer, unsigned char MR, short count);
 #define GPIO_PIN(port)		(*(unsigned int *)	(0x2009C014 + 0x20 * port))
 #define GPIO_SET(port)		(*(unsigned int *)	(0x2009C018 + 0x20 * port))
 #define GPIO_CLR(port)		(*(unsigned int *)	(0x2009C01C + 0x20 * port))
-#define GPIO_IntEnR(port)	(*(unsigned int *)	(0x2009C090 + 0x10 * port))
-#define GPIO_IntEnF(port)	(*(unsigned int *)	(0x2009C094 + 0x10 * port))
-#define GPIO_IntStatR(port)	(*(unsigned int *)	(0x2009C084 + 0x10 * port))
-#define GPIO_IntStatF(port)	(*(unsigned int *)	(0x2009C088 + 0x10 * port))
-#define GPIO_IntClt(port)	(*(unsigned int *)	(0x2009C08C + 0x10 * port))
+#define GPIO_IntEnR(port)	(*(unsigned int *)	(0x40028090 + 0x10 * port))
+#define GPIO_IntEnF(port)	(*(unsigned int *)	(0x40028094 + 0x10 * port))
+#define GPIO_IntStatR(port)	(*(unsigned int *)	(0x40028084 + 0x10 * port))
+#define GPIO_IntStatF(port)	(*(unsigned int *)	(0x40028088 + 0x10 * port))
+#define GPIO_IntClt(port)	(*(unsigned int *)	(0x4002808C + 0x10 * port))
 #define GPIO_IntStatus		(*(unsigned int *)	(0x40028080))
 
 #define GPIO0_IntPins		0x7FFF8FFF
 #define GPIO2_IntPins		0x3FF
+
+void GPIO_Int_Init(void);
+void GPIO_SetDIR(unsigned char port, int pins);
+void GPIO_Set(unsigned char port, int pins);
+void GPIO_Clear(unsigned char port, int pins);
+void GPIO_Toggle(unsigned char port, int pins);
+int GPIO_Read(unsigned char port);
+void GPIO_Int_Clear(unsigned char port, int pins);
+void GPIO_Int_EnableR(unsigned char port, int pins);
+void GPIO_Int_EnableF(unsigned char port, int pins);
+void GPIO_Int_DisableR(unsigned char port, int pins);
+void GPIO_Int_DisableF(unsigned char port, int pins);
+int GPIO_Int_StatusR(unsigned char port);
+int GPIO_Int_StatusF(unsigned char port);
+unsigned char GPIO_Int_Status();
+
+
+//-------------------------------
+
+#define SPI				0x40020000
+#define SPI_CR			(* (unsigned int*) (SPI))
+#define SPI_SR			(* (unsigned int*) (SPI + 0x4))
+#define SPI_DR			(* (unsigned int*) (SPI + 0x8))
+#define SPI_CCR			(* (unsigned int*) (SPI + 0xC))
+#define SPI_INT			(* (unsigned int*) (SPI + 0x1C))
+
+void SPI_Init();
+void SPI_Write(short data);
+void SPI_Int_Clear(void);
 
 #endif
 
