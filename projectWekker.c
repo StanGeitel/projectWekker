@@ -16,11 +16,12 @@
 #include "alarm.h"
 
 int main(void) {
-	alarmInit();
-	char arr[5] = {'0','1',':','3','4'};
-	setMessage(arr);
+	displayInit();
     while(1) {
-    	upRippleCounter();
+    	test1();
+    	for(int i = 0; i < 100; i++){
+    		asm("NOP");
+    	}
     }
     return 0 ;
 }

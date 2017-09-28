@@ -12,13 +12,18 @@
 #include <string.h>
 
 //add correct gpio pins	 	pins on shift register
-#define GPIO		0
-#define SHCLK 		0		//11 shift register clock
-#define STCLK 		1		//12 storage register clock
-#define SHMR		2		//10 shift register master reset LOW-active
-#define SHDI 		3		//14 shift register data input
-#define RCCLK		4		//clock of ripple counter
-#define RCRS		5		//Reset of ripple counter
+#define FIO2DIR		(*(unsigned int *) 0x2009C040)
+#define FIO2MASK	(*(unsigned int *) 0x2009C050)
+#define FIO2PIN		(*(unsigned int *) 0x2009C054)
+#define FIO2SET		(*(unsigned int *) 0x2009C058)
+#define FIO2CLR		(*(unsigned int *) 0x2009C05C)
+
+#define SHCLK 		(0x1)			//shift register clock
+#define STCLK 		(0x1 << 1)		//storage register clock
+#define SHMR		(0x1 << 2)		//shift register master reset LOW-active
+#define SHDI 		(0x1 << 3)		//shift register data input
+#define RCCLK		(0x1 << 4)		//clock of ripple counter
+#define RCRS		(0x1 << 5)		//Reset of ripple counter
 
 static unsigned int buffer1[7];
 static unsigned int buffer2[7];
@@ -37,7 +42,7 @@ void resetRippleCounter(void);
 void clearDisplay(void);
 void clearRows(void);
 void clearCharacter(int pos);
-void writeGpio(int pin, int state);
 void swapBuffer(void);
+void test1(void);
 
 #endif /* DISPLAY_H_ */

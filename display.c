@@ -8,10 +8,33 @@
 #include "display.h"
 
 void displayInit(void){
-	clearDisplay();
-	pWriteBuffer = &buffer1;
-	writeGpio(RCRS, 0);
+	//clearDisplay();
+	//pWriteBuffer = &buffer1;
+	FIO2DIR |= 0xFF;
+	FIO2MASK &= ~(0xFF);
+	FIO2CLR |= SHMR;
+	FIO2SET |= SHMR;
 }
+
+void test1(void){
+	FIO2CLR |= SHDI;
+	for(int i = 0; i < 25; i++){
+		FIO2CLR |= SHCLK;
+		FIO2SET |= SHCLK;
+	}
+
+	FIO2SET |= RCRS;
+
+	FIO2SET |= STCLK;
+	FIO2CLR |= STCLK;
+
+	FIO2CLR |= RCRS;
+
+	FIO2SET |= RCCLK;
+	FIO2CLR |= RCCLK;
+
+}
+
 
 void setMessage(char message[5]){
 	clearRows();
@@ -20,7 +43,6 @@ void setMessage(char message[5]){
 		setCharacter(message[i], pos);
 		pos++;
 	}
-
 	swapBuffer();
 }
 
@@ -29,22 +51,27 @@ void writeToDisplay(void){
 	for(int i = 0; i < 7; i++){
 		writeDataToShift(i);
 		writeDataToStorage();
-		turnOnRow(i);
-		resetRippleCounter();
+		upRippleCounter();
 	}
+	resetRippleCounter();
 }
 
 void writeDataToShift(int row){
 	for(int i = 0; i < 25; i++){
-		writeGpio(SHCLK, 0);
-		writeGpio(SHDI, ((*pReadBuffer)[row] & (0x1 << i)));
-		writeGpio(SHCLK, 1);
+		FIO2CLR |= SHCLK;
+		if((*pReadBuffer)[row] & (0x1 << i)){
+			FIO2SET |=SHDI;
+		}
+		else {
+			FIO2CLR |=SHDI;
+		}
+		FIO2SET |= SHCLK;
 	}
 }
 
 void writeDataToStorage(void){
-	writeGpio(STCLK, 0);
-	writeGpio(STCLK, 1);
+	FIO2CLR |= STCLK;
+	FIO2SET |= STCLK;
 }
 
 void turnOnRow(int row){
@@ -54,18 +81,18 @@ void turnOnRow(int row){
 }
 
 void upRippleCounter(void){
-	writeGpio(RCCLK, 0);
-	writeGpio(RCCLK, 1);
+	FIO2SET |= RCCLK;
+	FIO2CLR |= RCCLK;
 }
 
 void resetRippleCounter(void){
-	writeGpio(RCRS, 1);
-	writeGpio(RCRS, 0);
+	FIO2SET |= RCRS;
+	FIO2CLR |= RCRS;
 }
 
 void clearDisplay(void){
-	writeGpio(SHMR, 0);
-	writeGpio(SHMR, 1);
+	FIO2CLR |= SHMR;
+	FIO2SET |= SHMR;
 }
 
 void clearRows(void){
@@ -75,15 +102,6 @@ void clearRows(void){
 void clearCharacter(int pos){
 	for(int i = 0; i < 7; i++){
 		(*pWriteBuffer)[i] &= ~(0x1F << (pos * 5));
-	}
-}
-
-void writeGpio(int pin, int state){
-	if(state){
-		GPIO_Set(GPIO, pin);
-	}
-	else{
-		GPIO_Clear(GPIO, pin);
 	}
 }
 

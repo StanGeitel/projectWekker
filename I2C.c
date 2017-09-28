@@ -73,8 +73,6 @@ unsigned char I2C_ReadData(unsigned char slaveAddress, unsigned char dataRegiste
 	while((I2C0CONSET & 0x08) != 0x08);
 	I2C0CONCLR = 0x28;
 
-	printf("delay \n");
-
 	data = I2C0DAT;
 
 	/*I2C0CONSET = 0x04; //send ack

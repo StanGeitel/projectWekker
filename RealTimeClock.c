@@ -55,11 +55,11 @@ unsigned char RTC_ReadData(unsigned char slaveAddress, unsigned char dataRegiste
 
 void setTime(void){
 	char (*pTime)[5] = &rtcTime;
-	(*pTime)[0] = (char)RTC_GetHours() / 10;
-	(*pTime)[1] = (char)RTC_GetHours() % 10;
+	(*pTime)[0] = (char)((RTC_GetHours() / 10) + 48);
+	(*pTime)[1] = (char)((RTC_GetHours() % 10) + 48);
 	(*pTime)[2] = ':';
-	(*pTime)[3] = (char)RTC_GetMinutes() / 10;
-	(*pTime)[4] = (char)RTC_GetMinutes() % 10;
+	(*pTime)[3] = (char)((RTC_GetMinutes() / 10) + 48);
+	(*pTime)[4] = (char)((RTC_GetMinutes() % 10) + 48);
 }
 
 char* getTime(void){

@@ -30,9 +30,6 @@ void solveProblem(void){
 	Problem* pProblem = &problem;
 	setProblem(pProblem);
 	setMessage(pProblem->arr);
-	for(int i = 0; i <5; i++){
-		printf("%c", pProblem->arr[i]);
-	}
 	int userAnswer;
 	do {
 		do{
