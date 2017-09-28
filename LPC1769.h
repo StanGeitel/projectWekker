@@ -33,24 +33,8 @@
 #define PIN_MODEOD4	(*(unsigned int *)	(0x4002C078))
 #define I2C_PADCFG	(*(unsigned int *)	(0x4002C07C))
 
-//-----------------TIMER------------------//
-#define TIMER0	0
-#define TIMER1	1
-#define TIMER2	23
-#define TIMER3	24
-#define	MR0		0
-#define	MR1		1
-#define	MR2		2
-#define	MR3		3
-#define M4		10
-#define M5		11
-#define M6		12
-#define CR0		0
-#define CR1		1
-#define CR2		2
-#define CR3		3
 
-#define T(n) (0x40004000 + (0x4000 * n))
+#define T(n) 			(0x40004000 + (0x4000 * n))
 #define T_IR(timer) 	(*(unsigned int *)	(T(timer)))
 #define T_TCR(timer)	(*(unsigned int *)	(T(timer) + 0x4))
 #define T_TC(timer)		(*(unsigned int *)	(T(timer) + 0x8))
@@ -66,22 +50,6 @@
 #define LER				(*(unsigned int *)	(T(timer) + 0x50))
 #define CTCR			(*(unsigned int *)	(T(timer) + 0x70))
 
-void timer_Init(unsigned char timer, int prescaler);
-void timer_ClearIR(unsigned char timer);
-void timer_Enable(unsigned char timer);
-void timer_Disable(unsigned char timer);
-void timer_Reset(unsigned char timer);
-void timer_SetPR(unsigned char timer, int prescaler);
-void timer_SetMCR(unsigned char timer, unsigned char MR, unsigned char data);
-void timer_SetMR(unsigned char timer, unsigned char MR, short count);
-
-
-
-//-------------------GPIO------------------//
-#define PORT0	0
-#define PORT1	1
-#define PORT2	2
-#define PORT3	3
 
 #define GPIO_DIR(port)		(*(unsigned int *)	(0x2009C000 + 0x20 * port))
 #define GPIO_MASK(port)		(*(unsigned int *)	(0x2009C010 + 0x20 * port))
@@ -95,20 +63,6 @@ void timer_SetMR(unsigned char timer, unsigned char MR, short count);
 #define GPIO_IntClt(port)	(*(unsigned int *)	(0x2009C08C + 0x10 * port))
 #define GPIO_IntStatus		(*(unsigned int *)	(0x40028080))
 
-#define GPIO0_IntPins		0x7FFF8FFF
-#define GPIO2_IntPins		0x3FF
-
-void GPIO_Init(unsigned char port, int DIR, int pins);
-void GPIO_Int_Init(void);
-void GPIO_Set(unsigned char port, int pins);
-void GPIO_Clear(unsigned char port, int pins);
-void GPIO_Toggle(unsigned char port,int pins);
-int GPIO_Read(unsigned char port);
-void GPIO_Int_Clear(unsigned char port, int pins);
-void GPIO_Int_EnableR(unsigned char port, int pins);
-void GPIO_Int_EnableF(unsigned char port, int pins);
-int GPIO_Int_StatusR(unsigned char port);
-int GPIO_Int_StatusF(unsigned char port);
 
 #endif
 
