@@ -16,12 +16,12 @@
 #include "alarm.h"
 
 int main(void) {
-	displayInit();
+	alarmInit();
+	Problem* pProblem = &problem;
+	setProblem(pProblem);
+	setMessage(pProblem->arr);
     while(1) {
-    	test1();
-    	for(int i = 0; i < 100; i++){
-    		asm("NOP");
-    	}
+    	writeToDisplay();
     }
     return 0 ;
 }

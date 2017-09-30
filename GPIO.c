@@ -7,7 +7,7 @@ void GPIO_Init(unsigned char port, int DIR,int pins){
 
 void GPIO_Int_Init(void){
 	ISER0 |= 1 << 21;		//enable external interrupt 3
-	GPIO_Int_Clear(PORT0,0xFFF);
+//	GPIO_Int_Clear(PORT0,0xFFF);
 }
 
 void GPIO_SetDIR(unsigned char port, int pins){
@@ -31,7 +31,7 @@ int GPIO_Read(unsigned char port){
 }
 
 void GPIO_Int_ClearFlag(unsigned char port, int pins){
-	GPIO_IntClt(port) |= pins & port? GPIO2_IntPins : GPIO0_IntPins;
+//	GPIO_IntClt(port) |= pins & port? GPIO2_IntPins : GPIO0_IntPins;
 }
 
 unsigned char GPIO_Int_Status(){
@@ -39,26 +39,26 @@ unsigned char GPIO_Int_Status(){
 }
 
 void GPIO_Int_EnableR(unsigned char port, int pins){
-	GPIO_IntEnR(port) |= pins & (port? GPIO2_IntPins : GPIO0_IntPins);
+//	GPIO_IntEnR(port) |= pins & (port? GPIO2_IntPins : GPIO0_IntPins);
 }
 
 void GPIO_Int_EnableF(unsigned char port, int pins){
-	GPIO_IntEnF(port) |= pins & (port? GPIO2_IntPins : GPIO0_IntPins);
+//	GPIO_IntEnF(port) |= pins & (port? GPIO2_IntPins : GPIO0_IntPins);
 }
 
 void GPIO_Int_DisableR(unsigned char port, int pins){
-	GPIO_IntEnR(port) &= ~(pins & port? GPIO2_IntPins : GPIO0_IntPins);
+//	GPIO_IntEnR(port) &= ~(pins & port? GPIO2_IntPins : GPIO0_IntPins);
 }
 
 void GPIO_Int_DisableF(unsigned char port, int pins){
-	GPIO_IntEnF(port) &= ~(pins & port? GPIO2_IntPins : GPIO0_IntPins);
+//	GPIO_IntEnF(port) &= ~(pins & port? GPIO2_IntPins : GPIO0_IntPins);
 }
 
 int GPIO_Int_StatusR(unsigned char port){
-	return GPIO_IntStatR(port) & (port? GPIO2_IntPins : GPIO0_IntPins);
+//	return GPIO_IntStatR(port) & (port? GPIO2_IntPins : GPIO0_IntPins);
 }
 
 int GPIO_Int_StatusF(unsigned char port){
-	return GPIO_IntStatF(port) & (port? GPIO2_IntPins : GPIO0_IntPins);
+//	return GPIO_IntStatF(port) & (port? GPIO2_IntPins : GPIO0_IntPins);
 }
 
