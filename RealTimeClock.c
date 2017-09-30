@@ -1,22 +1,23 @@
-
+#include "I2C.h"
 #include "RealTimeClock.h"
+#include "LPC1769.h"
+#include <stdio.h>
 
-void RTC_Init()
+#define PINSEL0		(*(unsigned int *)	0x4002C000)
+#define T2MCR		(*(unsigned int *)	0x40090014)
+
+
+void RTC_Init(char seconde, char minute, char hour)
 {
-	I2C_WriteData(RTC_SlaveAddress, RTC_Secondes_Register, 0x00);
-	I2C_WriteData(RTC_SlaveAddress, RTC_Hours_Register, 0x00);
+	I2C_WriteData(RTC_SlaveAddress, RTC_Secondes_Register, (decToBcd(seconde) & 0x7F));
+	I2C_WriteData(RTC_SlaveAddress, RTC_Minuten_Register, decToBcd(minute)); //min is hex 0x11
+	I2C_WriteData(RTC_SlaveAddress, RTC_Hours_Register, decToBcd(hour));
 	RTC_SetSQWOutput(0);
 
-}
+	while(1){
+		printf("secondes: %d minutes: %d\n", I2C_ReadData(RTC_SlaveAddress, RTC_Secondes_Register), I2C_ReadData(RTC_SlaveAddress, RTC_Minuten_Register));
+	}
 
-unsigned char RTC_GetMinutes()
-{
-	return RTC_ReadData(RTC_SlaveAddress, RTC_Minuten_Register);
-}
-
-unsigned char RTC_GetHours()
-{
-	return RTC_ReadData(RTC_SlaveAddress, RTC_Hours_Register);
 }
 
 void RTC_SetSQWOutput(int Hz)
@@ -40,6 +41,9 @@ void RTC_SetSQWOutput(int Hz)
 		case 5: //logic 1
 			RTC_WriteData(RTC_SlaveAddress, RTC_Control_Register, 0x80);
 			break;
+		default:
+			printf("RTC_SetSQWOutput(int Hz) fault! \n");
+			break;
 	}
 }
 
@@ -50,19 +54,15 @@ void RTC_WriteData(unsigned char slaveAddress, unsigned char dataRegister, unsig
 
 unsigned char RTC_ReadData(unsigned char slaveAddress, unsigned char dataRegister)
 {
-	return I2C_ReadData(slaveAddress, dataRegister);
+	I2C_ReadData(slaveAddress, dataRegister);
 }
 
-void setTime(void){
-	char (*pTime)[5] = &rtcTime;
-	(*pTime)[0] = (char)((RTC_GetHours() / 10) + 48);
-	(*pTime)[1] = (char)((RTC_GetHours() % 10) + 48);
-	(*pTime)[2] = ':';
-	(*pTime)[3] = (char)((RTC_GetMinutes() / 10) + 48);
-	(*pTime)[4] = (char)((RTC_GetMinutes() % 10) + 48);
+char decToBcd(char val)
+{
+  return (((val / 10) << 4) | (val %10));
 }
 
-char* getTime(void){
-	char (*pTime)[5] = &rtcTime;
-	return (*pTime);
+char bcdToDec(char val)
+{
+    return (((val >> 4) * 10) + (val & 0x0F));
 }
