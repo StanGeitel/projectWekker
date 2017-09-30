@@ -8,19 +8,6 @@
 #define RTC_Control_Register   	0x07
 #define RTC_SlaveAddress		0xD0
 
-#define IR			(*(unsigned int *)	0x40090000)
-#define CTCR		(*(unsigned int *)	0x40090070)
-
-#define MR02		(*(unsigned int *)	0x40090018)
-#define TCR			(*(unsigned int *)	0x40090004)
-#define PCTIM2		(*(unsigned int *)	0x400FC0C4)
-
-#define CR			(*(unsigned int *)	0x40090004)
-#define CCR			(*(unsigned int *)	0x40090028)
-#define PCLKSEL1	(*(unsigned int *)	0x400FC1AC)
-#define ISER0		(*(unsigned int *)	0xE000E100)
-#define T2PR		(*(unsigned int *)	0x4009000C)
-
 
 void RTC_Init(char seconde, char minute, char hour);
 void RTC_WriteData(unsigned char slaveAddress, unsigned char dataRegister, unsigned char data);
@@ -30,3 +17,4 @@ unsigned char RTC_GetHours();
 void RTC_SetSQWOutput(int Hz);
 char bcdToDec(char val);
 char decToBcd(char val);
+char toTime(char *time, char min, char hour);

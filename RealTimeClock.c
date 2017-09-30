@@ -66,3 +66,22 @@ char bcdToDec(char val)
 {
     return (((val >> 4) * 10) + (val & 0x0F));
 }
+
+char toTime(char *time, char min, char hour)
+{
+    char temp[2];
+    itoa(min, temp, 10); //convert to string
+    if(min < 10){
+        strcat(time, "0");
+    }
+    strcat(time, temp);
+
+    strcat(time, ":");
+
+    itoa(hour, temp, 10);
+    if(hour < 10){
+        strcat(time, "0");
+    }
+    strcat(time, temp);
+    return time;
+}
