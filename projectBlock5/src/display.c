@@ -68,7 +68,9 @@ void TIMER1_IRQHandler(void){
 		V_RST(LOW);
 
 		if(displayUpdate){
+			int temp = frontBuffer;
 			frontBuffer = realloc(backBuffer,7* sizeof(int));
+			backBuffer = realloc(temp,7* sizeof(int));
 			calloc(*backBuffer,7*sizeof(int));
 			displayUpdate = false;
 		}

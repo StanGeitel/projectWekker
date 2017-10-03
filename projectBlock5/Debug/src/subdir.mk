@@ -9,6 +9,8 @@ C_SRCS += \
 ../src/IR.c \
 ../src/RealTimeClock.c \
 ../src/SPI.c \
+../src/alarm.c \
+../src/calculator.c \
 ../src/cr_startup_lpc175x_6x.c \
 ../src/crp.c \
 ../src/display.c \
@@ -22,6 +24,8 @@ OBJS += \
 ./src/IR.o \
 ./src/RealTimeClock.o \
 ./src/SPI.o \
+./src/alarm.o \
+./src/calculator.o \
 ./src/cr_startup_lpc175x_6x.o \
 ./src/crp.o \
 ./src/display.o \
@@ -35,6 +39,8 @@ C_DEPS += \
 ./src/IR.d \
 ./src/RealTimeClock.d \
 ./src/SPI.d \
+./src/alarm.d \
+./src/calculator.d \
 ./src/cr_startup_lpc175x_6x.d \
 ./src/crp.d \
 ./src/display.d \
@@ -47,7 +53,7 @@ C_DEPS += \
 src/%.o: ../src/%.c
 	@echo 'Building file: $<'
 	@echo 'Invoking: MCU C Compiler'
-	arm-none-eabi-gcc -DDEBUG -D__CODE_RED -DCORE_M3 -D__LPC17XX__ -D__REDLIB__ -I"C:\Users\Thijmen\Documents\LPCXpresso_8.2.2_650\workspace\projectBlock5\inc" -O0 -fno-common -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -fdata-sections -mcpu=cortex-m3 -mthumb -specs=redlib.specs -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
+	arm-none-eabi-gcc -DDEBUG -D__CODE_RED -DCORE_M3 -D__LPC17XX__ -D__REDLIB__ -I"C:\Users\Thijmen\Documents\GitHub\projectWekker\projectBlock5\inc" -O0 -fno-common -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -fdata-sections -mcpu=cortex-m3 -mthumb -specs=redlib.specs -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
