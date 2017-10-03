@@ -10,9 +10,9 @@
 #define MAX_TIME_STARTBIT	2500
 #define MIN_TIME_STARTBIT	2300
 
-#define TIMER	TIMER0
-#define PORT	PORT0
-#define PIN		0
+#define IR_TIMER	TIMER0
+#define IR_IOPORT	PORT0
+#define IR_PIN		0
 
 void IR_Init(void);
 void IR_IRQ(void);

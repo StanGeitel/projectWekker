@@ -16,20 +16,19 @@ void RTC_Init(char seconde, char minute, char hour)
 	I2C_WriteData(RTC_SlaveAddress, RTC_Hours_Register, uur);
 	RTC_SetSQWOutput(0);
 
-	timer_Init(TIMER,0);
-	timer_SetCTCR(TIMER,RISING_EDGE,CAP0);
-	timer_SetMCR(TIMER,MR0,0x3);
-	timer_SetMR(TIMER,MR0,60);
-	timer_ClearIR(TIMER);
-	timer_Enable(TIMER);
+	timer_Init(RTC_TIMER,0);
+	timer_SetCTCR(RTC_TIMER,RISING_EDGE,CAP0);
+	timer_SetMCR(RTC_TIMER,MR0,0x3);
+	timer_SetMR(RTC_TIMER,MR0,60);
+	timer_ClearIR(RTC_TIMER);
+	timer_Enable(RTC_TIMER);
 }
 
-void TIMER2_IRQHandler(void)
+void RTC_TIMER2_IRQHandler(void)
 {
-	timer_ClearIR(TIMER);
-	printf("It works! \n");
+	timer_ClearIR(RTC_TIMER);
 	RTC_setTime(RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Minuten_Register)), RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Hours_Register)));
-	printf("%s \n", RTC_getTime());
+	//printf("%s \n", RTC_getTime());
 }
 
 void RTC_SetSQWOutput(int Hz)
@@ -54,7 +53,7 @@ void RTC_SetSQWOutput(int Hz)
 			RTC_WriteData(RTC_SlaveAddress, RTC_Control_Register, 0x80);
 			break;
 		default:
-			printf("RTC_SetSQWOutput(int Hz) fault! \n");
+			//printf("RTC_SetSQWOutput(int Hz) fault! \n");
 			break;
 	}
 }

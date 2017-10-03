@@ -7,22 +7,27 @@ void timer_Init(unsigned char timer, int prescaler){
 		PCONP |= 1 << 1;
 		PCLKSEL0 |= 1 << 2;
 		ISER0 |= 1 << 1;
+		break;
 	case TIMER1:
 		PCONP |= 1 << 2;
 		PCLKSEL0 |= 1 << 4;
 		ISER0 |= 1 << 2;
+		break;
 	case TIMER2:
 		PCONP |= 1 << 22;
 		PCLKSEL1 |= 1 << 12;
 		ISER0 |= 1 << 3;
+		break;
 	case TIMER3:
 		PCONP |= 1 << 14;
 		PCLKSEL1 |= 1 << 2;
 		ISER0 |= 1 << 4;
+		break;
 	case PWM:
 		PCONP |= 1 << 6;
 		PCLKSEL0 |= 1 << 12;
 		ISER0 |= 1 << 9;
+		break;
 	}
 	timer_ClearIR(timer);
 	timer_SetPR(timer, prescaler);

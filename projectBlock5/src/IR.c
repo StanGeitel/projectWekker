@@ -7,14 +7,14 @@ short data = 0;
 unsigned char bit = 0;
 
 void IR_Init(void){
-	timer_Init(TIMER,3999);
-	timer_SetMR(TIMER,MR0,MIN_TIME_BIT0);
-	timer_SetMCR(TIMER,MR0,1);
+	timer_Init(IR_TIMER,3999);
+	timer_SetMR(IR_TIMER,MR0,MIN_TIME_BIT0);
+	timer_SetMCR(IR_TIMER,MR0,1);
 }
 
 void IR_IRQ(void){
-	if((GPIO_Int_StatusR(PORT) & PIN)){	//if pin is rising edge sensitive
-		short time = timer_GetCount(TIMER);
+	if((GPIO_Int_StatusR(IR_IOPORT) & IR_PIN)){	//if pin is rising edge sensitive
+		short time = timer_GetCount(IR_TIMER);
 		if(bit < SIRC_LENGTH){
 			if(time < MAX_TIME_BIT0 && time > MIN_TIME_BIT0){
 				bit++;
@@ -28,17 +28,17 @@ void IR_IRQ(void){
 		}else if(bit == SIRC_LENGTH){
 			data & 0x7F;
 		}
-		timer_Reset(TIMER);
-		GPIO_Int_DisableR(PORT,PIN);
-		GPIO_Int_DisableF(PORT,PIN);
+		timer_Reset(IR_TIMER);
+		GPIO_Int_DisableR(IR_IOPORT,IR_PIN);
+		GPIO_Int_DisableF(IR_IOPORT,IR_PIN);
 	}else{
-		timer_Reset(TIMER);
+		timer_Reset(IR_TIMER);
 	}
-	GPIO_Int_Clear(PORT, PIN);
+	GPIO_Int_Clear(IR_IOPORT, IR_PIN);
 }
 
-void TIMER0_IRQHandler(void){
-	GPIO_Int_EnableR(TIMER,PIN);
-	GPIO_Int_EnableF(TIMER,PIN);
-	timer_ClearIR(TIMER);
+void IR_TIMER0_IRQHandler(void){
+	GPIO_Int_EnableR(IR_TIMER,IR_PIN);
+	GPIO_Int_EnableF(IR_TIMER,IR_PIN);
+	timer_ClearIR(IR_TIMER);
 }

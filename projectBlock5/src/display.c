@@ -1,4 +1,3 @@
-
 #include <stdbool.h>
 #include <stdlib.h>
 #include "LPC1769.h"
@@ -11,71 +10,80 @@
 bool displayUpdate = false;
 unsigned char row = 0;
 
-int *backBuffer;
 int *frontBuffer;
+int *backBuffer;
+
 
 void display_Init(void){
 	SPI_Init();
-	GPIO_SetDIR(PORT,0x30003);
-	GPIO_Clear(PORT,1 << 16);
+	GPIO_SetDIR(DISPLAY_IOPORT,0x30003);
+	GPIO_Clear(DISPLAY_IOPORT, H_STO);										//set H_STO LOW(this has no effect until STO is set to GPIO
 
-	H_RST(LOW);
-	V_RST(HIGH);
+	H_RST(LOW);														//reset the shift registers
+	V_RST(HIGH);													//reset the row counter
 	H_RST(HIGH);
 	V_RST(LOW);
 
-	frontBuffer = malloc(7 * sizeof(int));
-	backBuffer = malloc(7 * sizeof(int));
+	frontBuffer = malloc(7 * sizeof(int));							//allocate memory for the frontBuffer
+	backBuffer = malloc(7 * sizeof(int));							//allocate memory for the backbuffer
 
-	timer_Init(TIMER, 666);
-	timer_SetMR(TIMER,MR0,10);
-	timer_SetMCR(TIMER,MR0,0x3);
-	timer_Enable(TIMER);
+	memset(frontBuffer,0,7*sizeof(int));							//set whole frontBuffer low
+	memset(backBuffer,0,7*sizeof(int));								//set whole backBuffer low
+
+
+	timer_Init(DISPLAY_TIMER,PRESCALER);
+	timer_SetMR(DISPLAY_TIMER,MR0,1);
+	timer_SetMCR(DISPLAY_TIMER,MR0,0x3);
+	timer_Enable(DISPLAY_TIMER);
 }
 
-void display_Set(char message[5]){
-	for(unsigned char pos = 4; pos >= 0; pos--){
-		display_SetChar(message[4 - pos], pos);
+void display_Set(char *message){										//write char array to backBuffer
+	for(unsigned char pos = 0; pos < 5; pos++){
+		display_SetChar(message[pos],pos);
 	}
 }
 
-void display_SetChar(char c, unsigned char pos){
-	for(unsigned char row = 0; row < 7; row++){
-		backBuffer[row] = (Font5x7[c - 32][row] << (pos * 5));
+void display_SetChar(char c, unsigned char pos){						//write char to backBuffer
+	c -= 32;															//first 32 characters in the ASCII table are commands
+	for(unsigned char horizontal = 0; horizontal < 5; horizontal++){	//write the character data into the buffer
+		for(unsigned char vertical = 0; vertical < 7; vertical++){
+			backBuffer[6 - vertical] |= (Font5x7[c][4 - horizontal] >> vertical) & (1 << (horizontal + 5 * pos));
+		}
 	}
 }
 
 void display_Write(void){
-	displayUpdate = true;
+	displayUpdate = true;												//updates the frontBuffer when it is not being red
 }
 
-void TIMER1_IRQHandler(void){
+void timer1_IRQHandler(void){
 	if(row < 7){
-		SPI_WriteInteger(0);
-		timer_SetPR(TIMER,666);
-		while(!(GPIO_Read(PORT) & (1 << 16)));
+		SPI_WriteInteger(~0);											//clear current row
+		timer_SetPR(DISPLAY_TIMER,PRESCALER);									//set prescaler back to its original value
 
-		V_CLK(HIGH);
+		while(!(GPIO_Read(DISPLAY_IOPORT) & H_STO));								//wait until H_STO is high so you know the row is cleared
+
+		V_CLK(HIGH);													//up the row counter
 		V_CLK(LOW);
 
-		SPI_WriteInteger(~frontBuffer[row]);
+		SPI_WriteInteger(~frontBuffer[row]);							//write data to the new row
 
 		row++;
-	}else if(row == 7){
-		timer_SetPR(TIMER,1332);
+	}else if(row == 7){													//if all row's have been written
+		timer_SetPR(DISPLAY_TIMER,PRESCALER*3);									//wait longer with writing the new row to make sure no led stays on for to long
 
-		V_RST(HIGH);
+		V_RST(HIGH);													//reset the row counter
 		V_RST(LOW);
 
-		if(displayUpdate){
-			int temp = frontBuffer;
-			frontBuffer = realloc(backBuffer,7* sizeof(int));
-			backBuffer = realloc(temp,7* sizeof(int));
-			calloc(*backBuffer,7*sizeof(int));
+		if(displayUpdate){												//if new data is ready
+			int temp = frontBuffer;										//Temporally store the base address of the current frontBuffer
+			frontBuffer = realloc(backBuffer,7* sizeof(int));			//set the base address of the backBuffer with all its new data in frontBuffer
+			backBuffer = realloc(temp,7* sizeof(int)); 					//set the previous base address of the frontBuffer in backBuffer;
+			memset(backBuffer,0,7*sizeof(int));							//clear the backBuffer of data
 			displayUpdate = false;
 		}
 		row = 0;
 	}
 
-	timer_ClearIR(TIMER);
+	timer_ClearIR(DISPLAY_TIMER);
 }
