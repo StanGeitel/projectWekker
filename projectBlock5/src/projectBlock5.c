@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include "LPC1769.h"
 #include "timer.h"
+#include "display.h"
 int test = 0;
 
 int main(void) {
@@ -26,18 +27,20 @@ int main(void) {
 	PIN_SEL1 |= 1 << 5;
 	PIN_SEL4 |= 1 << 2;
 
-	timer_Init(PWM,0);
-	timer_SetMR(PWM,MR0,10);
-	timer_SetMCR(PWM,MR0,0x2);
-	timer_SetMR(PWM,MR2,5);
-	timer_SetMCR(PWM,MR2,0x1);
-	timer_EnablePWM(2);
+
+
+	display_Init();
+	while(1)
+	for(char c = 48; c < 58;c++ ){
+		char arr[5] = {c,c,c,c,c};
+		display_Set(&arr);
+		display_Write();
+		for(int i = 0; i < 200000; i++)
+			asm("nop");
+	}
 
 	while(1);
 }
 
-void PWM1_IRQHandler(void){
-	timer_ClearIR(PWM);
-}
 
 

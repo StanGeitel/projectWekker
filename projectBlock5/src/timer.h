@@ -34,6 +34,7 @@ void timer_SetMCR(unsigned char timer, unsigned char MR, unsigned char data);
 void timer_SetMR(unsigned char timer, unsigned char MR, short count);
 void timer_SetCTCR(unsigned char timer, unsigned char mode, unsigned char cap);
 void timer_SetCCR(unsigned char timer, unsigned char cap, unsigned char data);
+int timer_GetCR(unsigned char timer, unsigned char cap);
 void timer_EnablePWM(unsigned char channels);
 void timer_SetPWMMR(unsigned char MR, unsigned char count);
 int timer_GetCount(unsigned char timer);

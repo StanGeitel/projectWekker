@@ -77,7 +77,7 @@ void timer_SetCCR(unsigned char timer, unsigned char cap, unsigned char data){
 }
 
 int timer_GetCR(unsigned char timer, unsigned char cap){
-	return timer_CR(timer,cap);
+	return T_CR(timer,cap);
 }
 
 void timer_EnablePWM(unsigned char channels){

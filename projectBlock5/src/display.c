@@ -7,7 +7,7 @@
 #include "font5x7.h"
 #include "SPI.h"
 
-bool displayUpdate = false;
+volatile bool displayUpdate = false;
 unsigned char row = 0;
 
 int arr[7];
@@ -33,23 +33,25 @@ void display_Init(void){
 	memset(backBuffer,0,7*sizeof(int));								//set whole backBuffer low
 
 
-	timer_Init(DISPLAY_TIMER,PRESCALER);
-	timer_SetMR(DISPLAY_TIMER,MR0,1);
+	timer_Init(DISPLAY_TIMER,500);
+	timer_Reset(DISPLAY_TIMER);
+	timer_SetMR(DISPLAY_TIMER,MR0,10);
 	timer_SetMCR(DISPLAY_TIMER,MR0,0x3);
 	timer_Enable(DISPLAY_TIMER);
 }
 
 void display_Set(char *message){										//write char array to backBuffer
 	for(unsigned char pos = 0; pos < 5; pos++){
-		display_SetChar(message[pos],pos);
+		display_SetChar(message[pos],4 - pos);
 	}
 }
 
 void display_SetChar(char c, unsigned char pos){						//write char to backBuffer
+	while(displayUpdate);
 	c -= 32;															//first 32 characters in the ASCII table are commands
 	for(unsigned char horizontal = 0; horizontal < 5; horizontal++){	//write the character data into the buffer
 		for(unsigned char vertical = 0; vertical < 7; vertical++){
-			backBuffer[6 - vertical] |= (Font5x7[c][4 - horizontal] >> vertical) & (1 << (horizontal + 5 * pos));
+			backBuffer[6 - vertical] |= ((Font5x7[c][4 - horizontal] >> vertical) & 1) << (horizontal + 5 * pos);
 		}
 	}
 }
@@ -58,10 +60,10 @@ void display_Write(void){
 	displayUpdate = true;												//updates the frontBuffer when it is not being red
 }
 
-void timer1_IRQHandler(void){
+void TIMER1_IRQHandler(void){
 	if(row < 7){
 		SPI_WriteInteger(~0);											//clear current row
-		timer_SetPR(DISPLAY_TIMER,PRESCALER);									//set prescaler back to its original value
+		timer_SetPR(DISPLAY_TIMER,500);									//set prescaler back to its original value
 
 		while(!(GPIO_Read(DISPLAY_IOPORT) & H_STO));								//wait until H_STO is high so you know the row is cleared
 
@@ -72,15 +74,15 @@ void timer1_IRQHandler(void){
 
 		row++;
 	}else if(row == 7){													//if all row's have been written
-		timer_SetPR(DISPLAY_TIMER,PRESCALER*3);									//wait longer with writing the new row to make sure no led stays on for to long
+		timer_SetPR(DISPLAY_TIMER,500*2);									//wait longer with writing the new row to make sure no led stays on for to long
 
 		V_RST(HIGH);													//reset the row counter
 		V_RST(LOW);
 
 		if(displayUpdate){												//if new data is ready
 			int temp = frontBuffer;										//Temporally store the base address of the current frontBuffer
-			frontBuffer = backBuffer;			//set the base address of the backBuffer with all its new data in frontBuffer
-			backBuffer = temp;					//set the previous base address of the frontBuffer in backBuffer;
+			frontBuffer = backBuffer;									//set the base address of the backBuffer with all its new data in frontBuffer
+			backBuffer = temp;											//set the previous base address of the frontBuffer in backBuffer;
 			memset(backBuffer,0,7*sizeof(int));							//clear the backBuffer of data
 			displayUpdate = false;
 		}

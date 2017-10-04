@@ -26,7 +26,7 @@ int GPIO_Read(unsigned char port){
 	return GPIO_PIN(port);
 }
 
-void GPIO_Int_ClearFlag(unsigned char port, int pins){
+void GPIO_Int_Clear(unsigned char port, int pins){
 	GPIO_IntClt(port) |= pins & port? GPIO2_IntPins : GPIO0_IntPins;
 }
 
