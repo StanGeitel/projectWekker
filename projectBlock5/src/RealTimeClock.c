@@ -4,6 +4,8 @@
 #include "timer.h"
 #include <string.h>
 
+#define PINSEL1		(*(unsigned int *)	0x4002C004)
+
 char time[6];
 
 void RTC_Init(char seconde, char minute, char hour)
@@ -16,6 +18,25 @@ void RTC_Init(char seconde, char minute, char hour)
 	I2C_WriteData(RTC_SlaveAddress, RTC_Hours_Register, uur);
 	RTC_SetSQWOutput(0);
 
+
+
+
+	timer_Init(TIMER3,0);
+	PINSEL1 |= 1 << 16;
+	PINSEL1 |= 1 << 17;
+	timer_Disable(TIMER3);
+	timer_ClearIR(TIMER3);
+	timer_SetCTCR(TIMER3,FALING_EDGE,CAP1);
+	timer_SetMR(TIMER3,MR0,60);
+	timer_SetMCR(TIMER3,MR0,0x3);
+
+	timer_Enable(TIMER3);
+}
+
+void TIMER3_IRQHandler(void)
+{
+	timer_ClearIR(TIMER3);
+	printf("It works! \n");
 	timer_Init(RTC_TIMER,0);
 	timer_SetCTCR(RTC_TIMER,RISING_EDGE,CAP0);
 	timer_SetMCR(RTC_TIMER,MR0,0x3);
