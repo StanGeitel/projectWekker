@@ -19,7 +19,7 @@ int *backBuffer;
 void display_Init(void){
 	SPI_Init();
 	GPIO_SetDIR(DISPLAY_IOPORT,0x30003);
-	GPIO_Clear(DISPLAY_IOPORT, H_STO);										//set H_STO LOW(this has no effect until STO is set to GPIO
+	GPIO_Clear(DISPLAY_IOPORT, H_STO);								//set H_STO LOW(this has no effect until STO is set to GPIO
 
 	H_RST(LOW);														//reset the shift registers
 	V_RST(HIGH);													//reset the row counter
