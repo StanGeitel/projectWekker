@@ -19,8 +19,8 @@ void timer_Init(unsigned char timer, int prescaler){
 		ISER0 |= 1 << 3;
 		break;
 	case TIMER3:
-		PCONP |= 1 << 14;
-		PCLKSEL1 |= 1 << 2;
+		PCONP |= 1 << 23;
+		PCLKSEL1 |= 1 << 14;
 		ISER0 |= 1 << 4;
 		break;
 	case PWM:
