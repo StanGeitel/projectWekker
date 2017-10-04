@@ -12,12 +12,6 @@ void alarmInit(void){
 	//setMessage(getTime());
 }
 
-//IRHandler for rtc 1HZ
-
-//IRHandler for display writeToDisplay();
-
-//IRHandler for alarm PWM for audiosignals???
-
 
 void solveProblem(void){
 	Problem* pProblem = &problem;
