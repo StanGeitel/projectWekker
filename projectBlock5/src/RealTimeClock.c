@@ -19,8 +19,6 @@ void RTC_Init(char seconde, char minute, char hour)
 	RTC_SetSQWOutput(0);
 
 
-
-
 	timer_Init(TIMER3,0);
 	PINSEL1 |= 1 << 16;
 	PINSEL1 |= 1 << 17;
