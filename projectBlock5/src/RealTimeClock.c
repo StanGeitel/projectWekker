@@ -2,13 +2,9 @@
 #include "RealTimeClock.h"
 #include "LPC1769.h"
 #include "timer.h"
-#include <string.h>
 #include "display.h"
 
-
 #define PINSEL1		(*(unsigned int *)	0x4002C004)
-
-char time[6];
 
 void RTC_Init(char seconde, char minute, char hour)
 {
@@ -89,24 +85,12 @@ char RTC_bcdToDec(char val)
     return (((val >> 4) * 10) + (val & 0x0F));
 }
 
-char* RTC_getTime(){
-	return time;
-}
-
 void RTC_setTime(int min, int hour){
-    if(min > 9){
-        time[0] = (min/10%10) + '0';
-        time[1] = (min%10) + '0';
-    }else{
-        time[0] = '0';
-        time[1] = (min%10) + '0';
-    }
-    time[2] = ':';
-    if(hour > 9){
-        time[3] = (hour/10%10) + '0';
-        time[4] = (hour%10) + '0';
-    }else{
-        time[3] = '0';
-        time[4] = (hour%10) + '0';
-    }
+	char time[6];
+    	time[0] = (char)(min/10) + '0';
+    	time[1] = (char)(min%10) + '0';
+    	time[2] = ':';
+    	time[3] = (char)(hour/10) + '0';
+    	time[4] = (char)(hour%10) + '0';
+    display_Set(time);
 }
