@@ -68,7 +68,16 @@ int timer_GetCount(unsigned char timer){
 }
 
 void timer_SetCTCR(unsigned char timer, unsigned char mode, unsigned char cap){
-	T_CTCR(timer) |= mode + cap << 2;
+	T_CTCR(timer) |= mode + (cap << 2);
+}
+
+void timer_SetCCR(unsigned char timer, unsigned char cap, unsigned char data){
+	T_CCR(timer) &= ~0x7 << (cap*3);
+	T_CCR(timer) |= data << (cap*3);
+}
+
+int timer_GetCR(unsigned char timer, unsigned char cap){
+	return timer_CR(timer,cap);
 }
 
 void timer_EnablePWM(unsigned char channels){

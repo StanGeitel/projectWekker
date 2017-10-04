@@ -10,6 +10,8 @@
 bool displayUpdate = false;
 unsigned char row = 0;
 
+int arr[7];
+
 int *frontBuffer;
 int *backBuffer;
 
@@ -77,8 +79,8 @@ void timer1_IRQHandler(void){
 
 		if(displayUpdate){												//if new data is ready
 			int temp = frontBuffer;										//Temporally store the base address of the current frontBuffer
-			frontBuffer = realloc(backBuffer,7* sizeof(int));			//set the base address of the backBuffer with all its new data in frontBuffer
-			backBuffer = realloc(temp,7* sizeof(int)); 					//set the previous base address of the frontBuffer in backBuffer;
+			frontBuffer = backBuffer;			//set the base address of the backBuffer with all its new data in frontBuffer
+			backBuffer = temp;					//set the previous base address of the frontBuffer in backBuffer;
 			memset(backBuffer,0,7*sizeof(int));							//clear the backBuffer of data
 			displayUpdate = false;
 		}

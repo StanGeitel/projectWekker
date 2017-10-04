@@ -11,8 +11,7 @@
 #define MIN_TIME_STARTBIT	2300
 
 #define IR_TIMER	TIMER0
-#define IR_IOPORT	PORT0
-#define IR_PIN		0
+#define IR_CAPTURE	CAP0
 
 void IR_Init(void);
 void IR_IRQ(void);
