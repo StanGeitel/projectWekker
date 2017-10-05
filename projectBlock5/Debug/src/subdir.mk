@@ -16,6 +16,7 @@ C_SRCS += \
 ../src/display.c \
 ../src/font5x7.c \
 ../src/projectBlock5.c \
+../src/sound.c \
 ../src/timer.c 
 
 OBJS += \
@@ -31,6 +32,7 @@ OBJS += \
 ./src/display.o \
 ./src/font5x7.o \
 ./src/projectBlock5.o \
+./src/sound.o \
 ./src/timer.o 
 
 C_DEPS += \
@@ -46,6 +48,7 @@ C_DEPS += \
 ./src/display.d \
 ./src/font5x7.d \
 ./src/projectBlock5.d \
+./src/sound.d \
 ./src/timer.d 
 
 

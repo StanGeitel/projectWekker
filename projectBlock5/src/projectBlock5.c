@@ -16,8 +16,7 @@
 
 #include <stdio.h>
 #include "LPC1769.h"
-#include "timer.h"
-#include "display.h"
+#include "IR.h"
 int test = 0;
 
 int main(void) {
@@ -28,17 +27,7 @@ int main(void) {
 	PIN_SEL4 |= 1 << 2;
 
 
-
-	display_Init();
-	while(1)
-	for(char c = 48; c < 58;c++ ){
-		char arr[5] = {c,c,c,c,c};
-		display_Set(&arr);
-		display_Write();
-		for(int i = 0; i < 200000; i++)
-			asm("nop");
-	}
-
+	IR_Init();
 	while(1);
 }
 

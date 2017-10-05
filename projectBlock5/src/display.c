@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "LPC1769.h"
 #include "GPIO.h"
-#include "timer.h"
+#include "RIT.h"
 #include "display.h"
 #include "font5x7.h"
 #include "SPI.h"
@@ -33,11 +33,9 @@ void display_Init(void){
 	memset(backBuffer,0,7*sizeof(int));								//set whole backBuffer low
 
 
-	timer_Init(DISPLAY_TIMER,500);
-	timer_Reset(DISPLAY_TIMER);
-	timer_SetMR(DISPLAY_TIMER,MR0,10);
-	timer_SetMCR(DISPLAY_TIMER,MR0,0x3);
-	timer_Enable(DISPLAY_TIMER);
+	RIT_Init();
+	RIT_SetCOMP(6666);
+	RIT_Enable();
 }
 
 void display_Set(char *message){										//write char array to backBuffer
@@ -60,7 +58,7 @@ void display_Write(void){
 	displayUpdate = true;												//updates the frontBuffer when it is not being red
 }
 
-void TIMER1_IRQHandler(void){
+void RIT_IRQHandler(void){
 	if(row < 7){
 		SPI_WriteInteger(~0);											//clear current row
 		timer_SetPR(DISPLAY_TIMER,500);									//set prescaler back to its original value
@@ -74,8 +72,6 @@ void TIMER1_IRQHandler(void){
 
 		row++;
 	}else if(row == 7){													//if all row's have been written
-		timer_SetPR(DISPLAY_TIMER,500*2);									//wait longer with writing the new row to make sure no led stays on for to long
-
 		V_RST(HIGH);													//reset the row counter
 		V_RST(LOW);
 
@@ -86,8 +82,8 @@ void TIMER1_IRQHandler(void){
 			memset(backBuffer,0,7*sizeof(int));							//clear the backBuffer of data
 			displayUpdate = false;
 		}
+	}else if(row == 9){
 		row = 0;
 	}
-
-	timer_ClearIR(DISPLAY_TIMER);
+	RIT_ClearIR();
 }
