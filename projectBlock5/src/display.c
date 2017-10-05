@@ -15,7 +15,6 @@ int arr[7];
 int *frontBuffer;
 int *backBuffer;
 
-
 void display_Init(void){
 	SPI_Init();
 	GPIO_SetDIR(DISPLAY_IOPORT,0x30003);
@@ -32,15 +31,23 @@ void display_Init(void){
 	memset(frontBuffer,0,7*sizeof(int));							//set whole frontBuffer low
 	memset(backBuffer,0,7*sizeof(int));								//set whole backBuffer low
 
+<<<<<<< HEAD
 
 	RIT_Init();
 	RIT_SetCOMP(6666);
 	RIT_Enable();
+=======
+	timer_Init(DISPLAY_TIMER,500);
+	timer_Reset(DISPLAY_TIMER);
+	timer_SetMR(DISPLAY_TIMER,MR0,10);
+	timer_SetMCR(DISPLAY_TIMER,MR0,0x3);
+	timer_Enable(DISPLAY_TIMER);
+>>>>>>> d629ec280d73f88b832938ccc0e336e29ced9f4d
 }
 
 void display_Set(char *message){										//write char array to backBuffer
 	for(unsigned char pos = 0; pos < 5; pos++){
-		display_SetChar(message[pos],4 - pos);
+		display_SetChar(message[4 - pos],pos);
 	}
 }
 
@@ -76,7 +83,7 @@ void RIT_IRQHandler(void){
 		V_RST(LOW);
 
 		if(displayUpdate){												//if new data is ready
-			int temp = frontBuffer;										//Temporally store the base address of the current frontBuffer
+			int *temp = frontBuffer;										//Temporally store the base address of the current frontBuffer
 			frontBuffer = backBuffer;									//set the base address of the backBuffer with all its new data in frontBuffer
 			backBuffer = temp;											//set the previous base address of the frontBuffer in backBuffer;
 			memset(backBuffer,0,7*sizeof(int));							//clear the backBuffer of data

@@ -22,11 +22,11 @@ void setProblem(Problem* pProblem) {
 			break;
 	}
 	char arr[5];
-		arr[0] = (char)((a / 10) + 48);
-		arr[1] = (char)((a % 10) + 48);
+		arr[0] = (char)((a / 10) + '0');
+		arr[1] = (char)((a % 10) + '0');
 		arr[2] = operator;
-		arr[3] = (char)((b / 10) + 48);
-		arr[4] = (char)((b % 10) + 48);
+		arr[3] = (char)((b / 10) + '0');
+		arr[4] = (char)((b % 10) + '0');
 
 	strcpy(pProblem->arr, arr);
 	pProblem->answer = d;

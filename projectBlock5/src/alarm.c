@@ -2,35 +2,36 @@
 #include "alarm.h"
 
 Problem problem;
+char alarmTime[5] = {'0','0',':','0','0'};
+unsigned char vol = 0;
 
 void alarmInit(void){
-	//I2C_Init();
-	//RTC_Init();
-	displayInit();
 	calculatorInit();
-	//init counter for seconds
-	//setMessage(getTime());
+	GPIO_Set(2, (0x07 << 2));
 }
 
-//IRHandler for rtc 1HZ
-
-//IRHandler for display writeToDisplay();
-
-//IRHandler for alarm PWM for audiosignals???
-
-
-void solveProblem(void){
+void alarmOn(void){
 	Problem* pProblem = &problem;
 	setProblem(pProblem);
 	setMessage(pProblem->arr);
+	upVolume();
+
 	int userAnswer;
 	do {
 		do{
 			scanf("%d", &userAnswer); //get an answer via remote
 		}while(!userAnswer);
 		if (userAnswer != pProblem->answer) {
-			//volumeUp();
+			upVolume();
 		}
 	} while ( userAnswer != pProblem->answer);
 }
+
+void upVolume(void){
+	vol++;
+	GPIO_Set(2, (0x07 << 2));
+	GPIO_Clear(2, (0x1 << (vol + 2)));
+}
+
+
 

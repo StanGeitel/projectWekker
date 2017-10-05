@@ -2,7 +2,7 @@
 #include "RealTimeClock.h"
 #include "LPC1769.h"
 #include "timer.h"
-#include <string.h>
+#include "display.h"
 
 #define PINSEL1		(*(unsigned int *)	0x4002C004)
 
@@ -18,16 +18,14 @@ void RTC_Init(char seconde, char minute, char hour)
 	I2C_WriteData(RTC_SlaveAddress, RTC_Hours_Register, uur);
 	RTC_SetSQWOutput(0);
 
-
-
+	PIN_SEL1 |= 1 << 16;
+	PIN_SEL1 |= 1 << 17;
 
 	timer_Init(TIMER3,0);
-	PINSEL1 |= 1 << 16;
-	PINSEL1 |= 1 << 17;
 	timer_Disable(TIMER3);
 	timer_ClearIR(TIMER3);
 	timer_SetCTCR(TIMER3,FALING_EDGE,CAP1);
-	timer_SetMR(TIMER3,MR0,60);
+	timer_SetMR(TIMER3,MR0,10);
 	timer_SetMCR(TIMER3,MR0,0x3);
 
 	timer_Enable(TIMER3);
@@ -35,34 +33,40 @@ void RTC_Init(char seconde, char minute, char hour)
 
 void TIMER3_IRQHandler(void)
 {
+<<<<<<< HEAD
 	timer_ClearIR(RTC_TIMER);
+=======
+	timer_ClearIR(TIMER3);
+	printf("It works! \n");
+>>>>>>> d629ec280d73f88b832938ccc0e336e29ced9f4d
 	RTC_setTime(RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Minuten_Register)), RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Hours_Register)));
 	//printf("%s \n", RTC_getTime());
+	//display_Set(time);
 }
 
 void RTC_SetSQWOutput(int Hz)
 {
 	switch(Hz){
 		case 0: //1Hz
-			RTC_WriteData(RTC_SlaveAddress, RTC_Control_Register, 0x10);
+			I2C_WriteData(RTC_SlaveAddress, RTC_Control_Register, 0x10);
 			break;
 		case 1: //4.096kHz
-			RTC_WriteData(RTC_SlaveAddress, RTC_Control_Register, 0x11);
+			I2C_WriteData(RTC_SlaveAddress, RTC_Control_Register, 0x11);
 			break;
 		case 2: //8.192kHz
-			RTC_WriteData(RTC_SlaveAddress, RTC_Control_Register, 0x12);
+			I2C_WriteData(RTC_SlaveAddress, RTC_Control_Register, 0x12);
 			break;
 		case 3: //32.768kHz
-			RTC_WriteData(RTC_SlaveAddress, RTC_Control_Register, 0x13);
+			I2C_WriteData(RTC_SlaveAddress, RTC_Control_Register, 0x13);
 			break;
 		case 4: //logic 0
-			RTC_WriteData(RTC_SlaveAddress, RTC_Control_Register, 0x00);
+			I2C_WriteData(RTC_SlaveAddress, RTC_Control_Register, 0x00);
 			break;
 		case 5: //logic 1
-			RTC_WriteData(RTC_SlaveAddress, RTC_Control_Register, 0x80);
+			I2C_WriteData(RTC_SlaveAddress, RTC_Control_Register, 0x80);
 			break;
 		default:
-			//printf("RTC_SetSQWOutput(int Hz) fault! \n");
+			printf("RTC_SetSQWOutput(int Hz) fault! \n");
 			break;
 	}
 }
@@ -87,24 +91,16 @@ char RTC_bcdToDec(char val)
     return (((val >> 4) * 10) + (val & 0x0F));
 }
 
-char* RTC_getTime(){
-	return time;
+void RTC_setTime(int min, int hour){
+	char time[6];
+    	time[0] = (char)(min/10) + '0';
+    	time[1] = (char)(min%10) + '0';
+    	time[2] = ':';
+    	time[3] = (char)(hour/10) + '0';
+    	time[4] = (char)(hour%10) + '0';
+    display_Set(time);
 }
 
-void RTC_setTime(int min, int hour){
-    if(min > 9){
-        time[0] = (min/10%10) + '0';
-        time[1] = (min%10) + '0';
-    }else{
-        time[0] = '0';
-        time[1] = (min%10) + '0';
-    }
-    time[2] = ':';
-    if(hour > 9){
-        time[3] = (hour/10%10) + '0';
-        time[4] = (hour%10) + '0';
-    }else{
-        time[3] = '0';
-        time[4] = (hour%10) + '0';
-    }
+char* RTC_getTime(){
+	return time;
 }
