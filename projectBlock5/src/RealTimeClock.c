@@ -6,6 +6,8 @@
 
 #define PINSEL1		(*(unsigned int *)	0x4002C004)
 
+char time[6];
+
 void RTC_Init(char seconde, char minute, char hour)
 {
 	char sec = RTC_decToBcd(seconde);
@@ -34,8 +36,8 @@ void TIMER3_IRQHandler(void)
 	timer_ClearIR(TIMER3);
 	printf("It works! \n");
 	RTC_setTime(RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Minuten_Register)), RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Hours_Register)));
-	printf("%s \n", RTC_getTime());
-	display_Set(time);
+	//printf("%s \n", RTC_getTime());
+	//display_Set(time);
 }
 
 void RTC_SetSQWOutput(int Hz)
@@ -93,4 +95,8 @@ void RTC_setTime(int min, int hour){
     	time[3] = (char)(hour/10) + '0';
     	time[4] = (char)(hour%10) + '0';
     display_Set(time);
+}
+
+char* RTC_getTime(){
+	return time;
 }

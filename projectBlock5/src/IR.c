@@ -2,6 +2,9 @@
 #include "timer.h"
 #include "GPIO.h"
 #include "IR.h"
+#include "alarm.h"
+#include "RealTimeClock.h"
+#include "display.h"
 
 unsigned char bit = 0;
 short data = 0;
@@ -29,6 +32,7 @@ void TIMER2_IRQHandler(void){
 		}else if(time < MAX_TIME_STARTBIT && time > MIN_TIME_STARTBIT){
 			bit = 0;
 			data = 0;
+			setButton(data);
 		}
 	}else if(bit == SIRC_LENGTH){
 
@@ -39,5 +43,24 @@ void EINT3_IRQHandler(void){
 	timer_Reset(IR_TIMER);
 	GPIO_Int_Clear(IR_IOPORT, 1 << IR_PIN);
 	PIN_SEL0 |= 0x3 << 8;	//set pin as capture pin
+}
 
+void setButton(char button){
+	Problem* pProblem = &problem;
+	switch(button){
+	case statusAlarm:
+		display_Set((*pProblem).arr);
+		display_Write();
+
+		for(int i = 0 ; i < 50000 ; i++){
+			asm("nop");
+		}
+
+		display_Set(RTC_getTime());
+		display_Write();
+		break;
+
+	default:
+		break;
+	}
 }
