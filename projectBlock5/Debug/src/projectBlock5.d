@@ -1,6 +1,6 @@
 src/projectBlock5.o src/projectBlock5.d: ../src/projectBlock5.c \
- ../src/LPC1769.h ../src/timer.h
+ ../src/LPC1769.h ../src/IR.h
 
 ../src/LPC1769.h:
 
-../src/timer.h:
+../src/IR.h:

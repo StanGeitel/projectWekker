@@ -48,9 +48,15 @@
 #define T_CR(timer, CR) (*(unsigned int *)	(T(timer) + 0x2C + (CR * 0x4)))
 #define T_EMR(timer) 	(*(unsigned int *)	(T(timer) + 0x3C))
 #define T_CTCR(timer) 	(*(unsigned int *)	(T(timer) + 0x70))
-#define PWM1PCR				(*(unsigned int *)	(0x4001804C))
-#define PWM1LER				(*(unsigned int *)	(0x40018050))
+#define PWM_PCR			(*(unsigned int *)	(0x4001804C))
+#define PWM_LER			(*(unsigned int *)	(0x40018050))
 
+//---------------------------------------
+
+#define RIT_COMP			(*(unsigned int *)	(0x400B0000))
+#define RIT_MASK			(*(unsigned int *)	(0x400B0004))
+#define RIT_CTRL			(*(unsigned int *)	(0x400B0008))
+#define RIT_COUNTER		(*(unsigned int *)	(0x400B000C))
 
 
 //-------------------GPIO------------------//

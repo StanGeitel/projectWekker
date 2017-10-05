@@ -3,7 +3,7 @@
 
 void GPIO_Int_Init(unsigned char port){
 	ISER0 |= 1 << 21;		//enable external interrupt 3
-	GPIO_Int_Clear(port,0xFFF);
+	GPIO_IntClt(port) &= ~0xFF;
 }
 
 void GPIO_SetDIR(unsigned char port, int pins){

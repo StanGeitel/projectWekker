@@ -33,8 +33,12 @@ void RTC_Init(char seconde, char minute, char hour)
 
 void TIMER3_IRQHandler(void)
 {
+<<<<<<< HEAD
+	timer_ClearIR(RTC_TIMER);
+=======
 	timer_ClearIR(TIMER3);
 	printf("It works! \n");
+>>>>>>> d629ec280d73f88b832938ccc0e336e29ced9f4d
 	RTC_setTime(RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Minuten_Register)), RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Hours_Register)));
 	//printf("%s \n", RTC_getTime());
 	//display_Set(time);
