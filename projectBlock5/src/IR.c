@@ -11,6 +11,7 @@ short data = 0;
 
 void IR_Init(void){
 	GPIO_Int_Init(IR_IOPORT);
+
 	GPIO_Int_EnableF(IR_IOPORT,1 << IR_PIN);
 
 	timer_Init(IR_TIMER,3999);
@@ -32,10 +33,11 @@ void TIMER2_IRQHandler(void){
 		}else if(time < MAX_TIME_STARTBIT && time > MIN_TIME_STARTBIT){
 			bit = 0;
 			data = 0;
-			setButton(data);
 		}
 	}else if(bit == SIRC_LENGTH){
-
+		printf("data: %d \n", data);
+		data = (data & ~0x1F) >> 5;
+		setButton(data);
 	}
 }
 
@@ -46,20 +48,43 @@ void EINT3_IRQHandler(void){
 }
 
 void setButton(char button){
-	Problem* pProblem = &problem;
 	switch(button){
 	case statusAlarm:
-		display_Set((*pProblem).arr);
+		display_Set(get_Alarm_Time());
 		display_Write();
 
-		for(int i = 0 ; i < 50000 ; i++){
+		/*delay*/
+		for(int i = 0 ; i < 100000 ; i++){
 			asm("nop");
 		}
 
 		display_Set(RTC_getTime());
 		display_Write();
 		break;
-
+	case buttonVolumeUp:
+		upVolume();
+		break;
+	case buttonVolumeDown:
+		downVolume();
+		break;
+	case button1:
+		break;
+	case button2:
+		break;
+	case button3:
+		break;
+	case button4:
+		break;
+	case button5:
+		break;
+	case button6:
+		break;
+	case button7:
+		break;
+	case button8:
+		break;
+	case button9:
+		break;
 	default:
 		break;
 	}
