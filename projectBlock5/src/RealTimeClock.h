@@ -12,11 +12,9 @@
 #define RTC_Control_Register   	0x07
 #define RTC_SlaveAddress		0xD0
 
-<<<<<<< HEAD
 #define RTC_TIMER TIMER3
-=======
+
 #define TIMER TIMER0
->>>>>>> d629ec280d73f88b832938ccc0e336e29ced9f4d
 
 void RTC_TimerInit();
 void RTC_Init(char seconde, char minute, char hour);

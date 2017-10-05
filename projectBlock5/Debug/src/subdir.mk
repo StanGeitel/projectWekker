@@ -7,6 +7,7 @@ C_SRCS += \
 ../src/GPIO.c \
 ../src/I2C.c \
 ../src/IR.c \
+../src/RIT.c \
 ../src/RealTimeClock.c \
 ../src/SPI.c \
 ../src/alarm.c \
@@ -23,6 +24,7 @@ OBJS += \
 ./src/GPIO.o \
 ./src/I2C.o \
 ./src/IR.o \
+./src/RIT.o \
 ./src/RealTimeClock.o \
 ./src/SPI.o \
 ./src/alarm.o \
@@ -39,6 +41,7 @@ C_DEPS += \
 ./src/GPIO.d \
 ./src/I2C.d \
 ./src/IR.d \
+./src/RIT.d \
 ./src/RealTimeClock.d \
 ./src/SPI.d \
 ./src/alarm.d \
@@ -56,7 +59,7 @@ C_DEPS += \
 src/%.o: ../src/%.c
 	@echo 'Building file: $<'
 	@echo 'Invoking: MCU C Compiler'
-	arm-none-eabi-gcc -DDEBUG -D__CODE_RED -DCORE_M3 -D__LPC17XX__ -D__REDLIB__ -I"C:\Users\Thijmen\Documents\GitHub\projectWekker\projectBlock5\inc" -O0 -fno-common -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -fdata-sections -mcpu=cortex-m3 -mthumb -specs=redlib.specs -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
+	arm-none-eabi-gcc -DDEBUG -D__CODE_RED -DCORE_M3 -D__LPC17XX__ -D__REDLIB__ -O0 -fno-common -g3 -Wall -c -fmessage-length=0 -fno-builtin -ffunction-sections -fdata-sections -mcpu=cortex-m3 -mthumb -specs=redlib.specs -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 

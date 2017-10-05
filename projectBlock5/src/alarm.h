@@ -12,8 +12,11 @@
 #include "display.h"
 #include "calculator.h"
 
-void alarmInit(void);
-void alarmOn(void);
-void upVolume(void);
+void alarm_Init(void);
+void alarm_On(void);
+void alarm_Off(void);
+void up_Volume(void);
+void down_Volume(void);
+char* get_Alarm_Time(voi);
 
 #endif /* ALARM_H_ */
