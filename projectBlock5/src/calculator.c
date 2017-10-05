@@ -48,15 +48,20 @@ void divide(int a, int b, int c, char operator){
 }
 
 void set_Problem(int a, int b, int c,  char operator){
-	Problem* pProblem = &problem;
 	char arr[5];
 		arr[0] = (char)((a / 10) + '0');
 		arr[1] = (char)((a % 10) + '0');
 		arr[2] = operator;
 		arr[3] = (char)((b / 10) + '0');
 		arr[4] = (char)((b % 10) + '0');
-	strcpy(pProblem->arr, arr);
-	pProblem->answer = c;
+	strcpy(problem.arr, arr);
+	char answer[5];
+		answer[0] = (char)((c / 1000) + '0');
+		answer[1] = (char)((c / 100) + '0');
+		answer[2] = (char)((c / 10) + '0');
+		answer[3] = (char)((c % 10) + '0');
+		answer[4] = ' ';
+	strcpy(problem.answer, answer);
 }
 
 int get_Random(int max) {

@@ -2,7 +2,7 @@
 #ifndef CALCULATOR_H_
 #define CALCULATOR_H_
 
-typedef struct _Problem{ char arr[5]; int answer; }Problem;
+typedef struct _Problem{ char arr[5]; char answer[5]; }Problem;
 extern Problem problem;
 
 void calculator_Init(void);

@@ -84,12 +84,12 @@ char RTC_bcdToDec(char val)
 }
 
 void RTC_setTime(int min, int hour){
-    time[0] = (char)(min/10) + '0';
-    time[1] = (char)(min%10) + '0';
-    time[2] = ':';
-    time[3] = (char)(hour/10) + '0';
-    time[4] = (char)(hour%10) + '0';
-    display_Set(time);
+    RTC_time[0] = (char)(min/10) + '0';
+    RTC_time[1] = (char)(min%10) + '0';
+    RTC_time[2] = ':';
+    RTC_time[3] = (char)(hour/10) + '0';
+    RTC_time[4] = (char)(hour%10) + '0';
+    display_Set(RTC_time);
 }
 
 char* RTC_getTime(){
