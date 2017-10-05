@@ -16,19 +16,18 @@
 #define IR_IOPORT	PORT0
 #define IR_PIN		4
 
-#define button1 			0x00
-#define button2 			0x00
-#define button3 			0x00
-#define button4 			0x00
-#define button5				0x00
-#define button6			 	0x00
-#define button7 			0x00
-#define button8 			0x00
-#define button9 			0x00
-#define button0 			0x00
-#define buttonVolumeUp 		0x00
-#define buttonVolumeDown 	0x00
-#define statusAlarm 		0x00
+#define button1 			0
+#define button2 			1
+#define button3 			2
+#define button4 			3
+#define button5				4
+#define button6			 	5
+#define button7 			6
+#define button8 			7
+#define button9 			8
+#define buttonVolumeUp 		36  //vol+
+#define buttonVolumeDown 	100 //vol-
+#define statusAlarm 		24	//11 1-
 
 void IR_Init(void);
 void IR_IRQ(void);
