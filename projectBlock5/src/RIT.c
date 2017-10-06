@@ -5,6 +5,7 @@ void RIT_Init(void){
 	PCLKSEL1 |= 1 << 26;
 	ISER0 |= 1 << 29;
 	RIT_CTRL |= 0x3;
+
 }
 
 void RIT_ClearIR(void){
