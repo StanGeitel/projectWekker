@@ -69,7 +69,7 @@
 #define RIT_COMP			(*(unsigned int *)	(0x400B0000))
 #define RIT_MASK			(*(unsigned int *)	(0x400B0004))
 #define RIT_CTRL			(*(unsigned int *)	(0x400B0008))
-#define RIT_COUNTER		(*(unsigned int *)	(0x400B000C))
+#define RIT_COUNTER			(*(unsigned int *)	(0x400B000C))
 
 
 //-------------------GPIO------------------//

@@ -19,7 +19,7 @@ void gen_Problem(void) {
 			break;
 	case 1: {c = a - b; subtract(a, b, c, '-');}
 			break;
-	case 2: {c = a * b; set_Problem(a, b, c, '*');}
+	case 2: {c = a * b; set_Problem(a, b, c, 'x');}
 			break;
 	case 3: {divide(a, b, '/');}
 			break;
@@ -38,11 +38,11 @@ void subtract(int a, int b, int c, char operator){
 
 void divide(int a, int b, char operator){
 	int d = a, e = b;
-	float f = d / e;
+	float f = (float)d / (float)e;
 	while(!(ceilf(f)== f && floorf(f) == f)){
 		d = get_Random(99);
 		e = get_Random(99);
-		f = d / e;
+		f = (float)d / (float)e;
 	}
 	set_Problem(d, e, f, operator);
 }

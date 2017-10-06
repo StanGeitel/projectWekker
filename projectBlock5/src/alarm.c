@@ -15,6 +15,7 @@ char settings = 0;		//b0 = alarm instellen 	b1 en b2 = positie alarm instellen
 
 void alarm_Init(void){
 	calculator_Init();
+	GPIO_SetDIR(2, (0x07 << 2));
 	GPIO_Set(2, (0x07 << 2));
 }
 
