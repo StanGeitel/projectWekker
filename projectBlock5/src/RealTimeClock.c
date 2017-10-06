@@ -3,6 +3,7 @@
 #include "LPC1769.h"
 #include "timer.h"
 #include "display.h"
+#include <stdio.h>
 
 char RTC_time[5] =  {'0','0',':','0','0'};
 
@@ -27,17 +28,16 @@ void RTC_Init(char seconde, char minute, char hour)
 	timer_SetMCR(TIMER3,MR0,0x3);
 
 	timer_Enable(TIMER3);
+
+	printf("a \n");
 }
 
 void TIMER3_IRQHandler(void)
 {
-	timer_ClearIR(RTC_TIMER);
+	//timer_ClearIR(RTC_TIMER);
 	timer_ClearIR(TIMER3);
-<<<<<<< HEAD
-	printf("It works! \n");
-=======
->>>>>>> 0797727b13ba934defffc04b08691aa6fce6326b
-	RTC_setTime(RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Minuten_Register)), RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Hours_Register)));
+	printf("it works \n");
+	//RTC_setTime(RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Minuten_Register)), RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Hours_Register)));
 }
 
 void RTC_SetSQWOutput(int Hz)
@@ -94,6 +94,7 @@ void RTC_setTime(int min, int hour){
     RTC_time[3] = (char)(hour/10) + '0';
     RTC_time[4] = (char)(hour%10) + '0';
     display_Set(RTC_time);
+    display_Write();
 }
 
 char* RTC_getTime(){
