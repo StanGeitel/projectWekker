@@ -38,7 +38,6 @@ void TIMER2_IRQHandler(void){
 			data = 0;
 		}
 	}else if(bit == SIRC_LENGTH){
-		printf("data: %d \n", data);
 		data = (data & ~0x1F) >> 5;
 		setButton(data);
 	}else if(bit == SIRC_LENGTH && ((data >> 7) & 0x1F) == IR_ADDRESS){						//if end of transmission and IR address matches

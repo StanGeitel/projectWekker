@@ -26,6 +26,8 @@ int main(void) {
 	PIN_SEL1 |= 1 << 5;
 	PIN_SEL4 |= 1 << 2;
 
+	RIT_COUNTER = 0x0;
+
 	alarm_Init();
 	display_Init();
 	alarm_On();
