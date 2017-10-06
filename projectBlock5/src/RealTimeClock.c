@@ -4,9 +4,7 @@
 #include "timer.h"
 #include "display.h"
 
-#define PINSEL1		(*(unsigned int *)	0x4002C004)
-
-char time[6];
+char RTC_time[5] =  {'0','0',':','0','0'};
 
 void RTC_Init(char seconde, char minute, char hour)
 {
@@ -35,10 +33,11 @@ void TIMER3_IRQHandler(void)
 {
 	timer_ClearIR(RTC_TIMER);
 	timer_ClearIR(TIMER3);
+<<<<<<< HEAD
 	printf("It works! \n");
+=======
+>>>>>>> 0797727b13ba934defffc04b08691aa6fce6326b
 	RTC_setTime(RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Minuten_Register)), RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Hours_Register)));
-	//printf("%s \n", RTC_getTime());
-	//display_Set(time);
 }
 
 void RTC_SetSQWOutput(int Hz)
@@ -89,15 +88,14 @@ char RTC_bcdToDec(char val)
 }
 
 void RTC_setTime(int min, int hour){
-	char time[6];
-    	time[0] = (char)(min/10) + '0';
-    	time[1] = (char)(min%10) + '0';
-    	time[2] = ':';
-    	time[3] = (char)(hour/10) + '0';
-    	time[4] = (char)(hour%10) + '0';
-    display_Set(time);
+    RTC_time[0] = (char)(min/10) + '0';
+    RTC_time[1] = (char)(min%10) + '0';
+    RTC_time[2] = ':';
+    RTC_time[3] = (char)(hour/10) + '0';
+    RTC_time[4] = (char)(hour%10) + '0';
+    display_Set(RTC_time);
 }
 
 char* RTC_getTime(){
-	return time;
+	return RTC_time;
 }

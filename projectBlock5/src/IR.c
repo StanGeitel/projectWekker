@@ -9,6 +9,7 @@
 unsigned char bit = 0;
 short data = 0;
 
+
 void IR_Init(void){
 	PIN_SEL0 &= ~(0x3 << 8);
 
@@ -35,8 +36,11 @@ void TIMER2_IRQHandler(void){
 		}else if(time < MAX_TIME_STARTBIT && time > MIN_TIME_STARTBIT){
 			bit = 0;
 			data = 0;
-			setButton(data);
 		}
+	}else if(bit == SIRC_LENGTH){
+		printf("data: %d \n", data);
+		data = (data & ~0x1F) >> 5;
+		setButton(data);
 	}else if(bit == SIRC_LENGTH && ((data >> 7) & 0x1F) == IR_ADDRESS){						//if end of transmission and IR address matches
 		//do something with data
 	}
@@ -44,27 +48,22 @@ void TIMER2_IRQHandler(void){
 
 void EINT3_IRQHandler(void){
 	timer_Reset(IR_TIMER);
+<<<<<<< HEAD
 	GPIO_Int_Clear(IR_IOPORT, 1 << IR_PIN);										//set pin as capture pin
 
+=======
+	GPIO_Int_Clear(IR_IOPORT, 1 << IR_PIN);
+
+	PIN_SEL0 |= 0x3 << 8;												//set pin as capture pin
+>>>>>>> 0797727b13ba934defffc04b08691aa6fce6326b
 	PIN_SEL0 |= 0x3 << 8;	//set pin as capture pin
 }
 
-void setButton(char button){
-	Problem* pProblem = &problem;
-	switch(button){
-	case statusAlarm:
-		display_Set((*pProblem).arr);
-		display_Write();
 
-		for(int i = 0 ; i < 50000 ; i++){
-			asm("nop");
-		}
-
+<<<<<<< HEAD
 		display_Set(RTC_getTime());
 		display_Write();
 		break;
+=======
+>>>>>>> 0797727b13ba934defffc04b08691aa6fce6326b
 
-	default:
-		break;
-	}
-}

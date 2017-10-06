@@ -34,6 +34,10 @@ void display_Init(void){
 	RIT_Init();
 	RIT_SetCOMP(6666);
 	RIT_Enable();
+<<<<<<< HEAD
+=======
+
+>>>>>>> 0797727b13ba934defffc04b08691aa6fce6326b
 }
 
 void display_Set(char *message){										//write char array to backBuffer
@@ -58,8 +62,14 @@ void display_Write(void){
 
 void RIT_IRQHandler(void){
 	if(row < 7){
+<<<<<<< HEAD
 		SPI_WriteInteger(~0);							//set prescaler back to its original value
+=======
+>>>>>>> 0797727b13ba934defffc04b08691aa6fce6326b
 
+		SPI_WriteInteger(~0);											//clear current row								//set prescaler back to its original value
+
+		RIT_SetCOMP(6666);
 		while(!(GPIO_Read(DISPLAY_IOPORT) & H_STO));								//wait until H_STO is high so you know the row is cleared
 
 		V_CLK(HIGH);													//up the row counter
@@ -71,7 +81,7 @@ void RIT_IRQHandler(void){
 	}else if(row == 7){													//if all row's have been written
 		V_RST(HIGH);													//reset the row counter
 		V_RST(LOW);
-
+		RIT_SetCOMP(6666*2);
 		if(displayUpdate){												//if new data is ready
 			int *temp = frontBuffer;										//Temporally store the base address of the current frontBuffer
 			frontBuffer = backBuffer;									//set the base address of the backBuffer with all its new data in frontBuffer
