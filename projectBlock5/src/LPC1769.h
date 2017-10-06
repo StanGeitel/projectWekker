@@ -109,7 +109,10 @@
 #define I2C_SCLL  	(*(unsigned int *)	(I2C + 0x14)) // SCL Duty Cycle Register Low Half Word
 #define I2C_CONCLR  (*(unsigned int *)	(I2C + 0x18)) // clear control register
 
-void clock_Init(void);
+void system_Init(void);
+void system_Reset(void);
+void system_SetClock(void);
+void system_SetPins(void);
 
 #endif
 
