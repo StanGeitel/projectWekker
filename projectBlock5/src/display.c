@@ -31,18 +31,9 @@ void display_Init(void){
 	memset(frontBuffer,0,7*sizeof(int));							//set whole frontBuffer low
 	memset(backBuffer,0,7*sizeof(int));								//set whole backBuffer low
 
-<<<<<<< HEAD
-
 	RIT_Init();
 	RIT_SetCOMP(6666);
 	RIT_Enable();
-=======
-	timer_Init(DISPLAY_TIMER,500);
-	timer_Reset(DISPLAY_TIMER);
-	timer_SetMR(DISPLAY_TIMER,MR0,10);
-	timer_SetMCR(DISPLAY_TIMER,MR0,0x3);
-	timer_Enable(DISPLAY_TIMER);
->>>>>>> d629ec280d73f88b832938ccc0e336e29ced9f4d
 }
 
 void display_Set(char *message){										//write char array to backBuffer
@@ -67,8 +58,7 @@ void display_Write(void){
 
 void RIT_IRQHandler(void){
 	if(row < 7){
-		SPI_WriteInteger(~0);											//clear current row
-		timer_SetPR(DISPLAY_TIMER,500);									//set prescaler back to its original value
+		SPI_WriteInteger(~0);							//set prescaler back to its original value
 
 		while(!(GPIO_Read(DISPLAY_IOPORT) & H_STO));								//wait until H_STO is high so you know the row is cleared
 
@@ -89,7 +79,6 @@ void RIT_IRQHandler(void){
 			memset(backBuffer,0,7*sizeof(int));							//clear the backBuffer of data
 			displayUpdate = false;
 		}
-	}else if(row == 9){
 		row = 0;
 	}
 	RIT_ClearIR();

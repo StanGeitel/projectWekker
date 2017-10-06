@@ -2,7 +2,6 @@
 #ifndef DISPLAY_H_
 #define DISPLAY_H_
 
-#define DISPLAY_TIMER	TIMER1
 #define DISPLAY_IOPORT	PORT0
 #define HIGH 	1
 #define LOW		0

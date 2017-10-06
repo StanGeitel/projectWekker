@@ -30,7 +30,7 @@ void GPIO_Int_Clear(unsigned char port, int pins){
 	GPIO_IntClt(port) |= pins & port? GPIO2_IntPins : GPIO0_IntPins;
 }
 
-unsigned char GPIO_Int_Status(){
+unsigned char GPIO_Int_Status(void){
 	return (GPIO_IntStatus >> 1) + (GPIO_IntStatus & 1);	//return bit 0 and 2 as bit 0 and 1
 }
 

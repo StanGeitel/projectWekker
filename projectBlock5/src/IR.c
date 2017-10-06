@@ -44,10 +44,8 @@ void TIMER2_IRQHandler(void){
 
 void EINT3_IRQHandler(void){
 	timer_Reset(IR_TIMER);
-	GPIO_Int_Clear(IR_IOPORT, 1 << IR_PIN);
-<<<<<<< HEAD
-	PIN_SEL0 |= 0x3 << 8;												//set pin as capture pin
-=======
+	GPIO_Int_Clear(IR_IOPORT, 1 << IR_PIN);										//set pin as capture pin
+
 	PIN_SEL0 |= 0x3 << 8;	//set pin as capture pin
 }
 
@@ -65,7 +63,6 @@ void setButton(char button){
 		display_Set(RTC_getTime());
 		display_Write();
 		break;
->>>>>>> d629ec280d73f88b832938ccc0e336e29ced9f4d
 
 	default:
 		break;

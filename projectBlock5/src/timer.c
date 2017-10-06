@@ -83,10 +83,10 @@ int timer_GetCR(unsigned char timer, unsigned char cap){
 
 void timer_PWM_Enable(unsigned char channels){
 	T_TCR(PWM) |= 0x9;
-	PWM1PCR |= channels << 9;
+	PWM_PCR |= channels << 9;
 }
 
 void timer_PWM_SetMR(unsigned char MR, int count){
 	T_MR(PWM, MR) = count;
-	PWM1LER |= 1 << MR;
+	PWM_LER |= 1 << MR;
 }

@@ -2,6 +2,19 @@
 #ifndef LPC1769_H_
 #define LPC1769_H_
 
+#define CPU_F	120
+#define PLL			0x400fc080
+#define PLL_CON		(*(unsigned int *)	(PLL))
+#define PLL_CFG		(*(unsigned int *)	(PLL + 0x4))
+#define PLL_STAT	(*(unsigned int *)	(PLL + 0x8))
+#define PLL_FEED	(*(unsigned int *)	(PLL + 0xC))
+#define CCLKCFG		(*(unsigned int *)	(0x400FC104))
+#define CLKSRCSEL	(*(unsigned int *)	(0x400FC10C))
+#define CLKOUTCFG	(*(unsigned int *)	(0x400FC108))
+#define SCS			(*(unsigned int *)	(0x400FC1A0))
+
+#define AIRCR		(*(unsigned int *)	(0xE000ED0C))
+
 #define PCONP		(*(unsigned int *)	(0x400FC0C4))
 #define PCLKSEL0	(*(unsigned int *)	(0x400FC1A8))
 #define PCLKSEL1	(*(unsigned int *)	(0x400FC1AC))
@@ -95,6 +108,8 @@
 #define I2C_SCLH  	(*(unsigned int *)	(I2C + 0x10)) // SCH Duty Cycle Register High Half Word
 #define I2C_SCLL  	(*(unsigned int *)	(I2C + 0x14)) // SCL Duty Cycle Register Low Half Word
 #define I2C_CONCLR  (*(unsigned int *)	(I2C + 0x18)) // clear control register
+
+void clock_Init(void);
 
 #endif
 
