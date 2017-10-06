@@ -8,7 +8,7 @@ extern Problem problem;
 void calculator_Init(void);
 void gen_Problem(void);
 void subtract(int a, int b, int c, char operator);
-void divide(int a, int b, int c, char operator);
+void divide(int a, int b, char operator);
 void set_Problem(int a, int b, int c, char operator);
 int get_Random(int max);
 

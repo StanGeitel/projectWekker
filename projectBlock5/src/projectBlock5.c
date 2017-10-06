@@ -15,12 +15,8 @@
 #include <cr_section_macros.h>
 
 #include <stdio.h>
+#include "alarm.h"
 #include "LPC1769.h"
-
-#include "IR.h"
-int test = 0;
-
-#include "timer.h"
 #include "display.h"
 
 int main(void) {
@@ -30,9 +26,9 @@ int main(void) {
 	PIN_SEL1 |= 1 << 5;
 	PIN_SEL4 |= 1 << 2;
 
+	alarm_Init();
 	display_Init();
-	display_Set("hallo");
-	display_Write();
+	alarm_On();
 	while(1);
 }
 

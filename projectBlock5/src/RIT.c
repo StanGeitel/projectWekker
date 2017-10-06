@@ -4,7 +4,7 @@ void RIT_Init(void){
 	PCONP |= 1 << 16;
 	PCLKSEL1 |= 1 << 26;
 	ISER0 |= 1 << 29;
-	RIT_ClearIR();
+	RIT_CTRL |= 0x3;
 }
 
 void RIT_ClearIR(void){
@@ -17,10 +17,6 @@ void RIT_Enable(void){
 
 void RIT_Disable(void){
 	RIT_CTRL &= ~(1 << 3);
-}
-
-void RIT_Clear(void){
-	RIT_CTRL |= 1 << 1;
 }
 
 void RIT_SetCOMP(int value){
