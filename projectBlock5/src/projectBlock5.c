@@ -12,6 +12,9 @@
 #include "LPC17xx.h"
 #endif
 
+#include "LPC1769.h"
+#include "display.h"
+#include "sound.h"
 #include <cr_section_macros.h>
 #include "LPC1769.h"
 #include "display.h"

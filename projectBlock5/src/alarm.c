@@ -9,6 +9,7 @@
 #include "RealTimeClock.h"
 
 Problem problem;
+
 char alarmTime[5] = {'0','0',':','0','0'};
 char userAnswer[5] = {' ',' ',' ',' ',' '};
 unsigned char volume = 1, posAlarmTime = 0, posUserAnswer = 4;
@@ -153,5 +154,3 @@ void alarm_SetButton(char button){
 		}
 	}
 }
-
-
