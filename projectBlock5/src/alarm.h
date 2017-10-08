@@ -8,14 +8,36 @@
 #ifndef ALARM_H_
 #define ALARM_H_
 
-#include <stdio.h>
-#include "LPC1769.h"
-#include "RealTimeClock.h"
-#include "display.h"
-#include "calculator.h"
+#define button0				0
+#define button1 			1
+#define button2 			2
+#define button3 			3
+#define button4 			4
+#define button5				5
+#define button6			 	6
+#define button7 			7
+#define button8 			8
+#define button9 			9
+#define buttonLeft			10	//nee toch niet
+#define buttonRight			11	//ook niet
+#define buttonOk			12	//ook niet
+#define buttonVolumeUp 		37  //vol+
+#define buttonVolumeDown 	101 //vol-
+#define setAlarm 			25	//11 1-
+#define setActive			50	//ook niet
 
-
-void alarmInit(void);
-void solveProblem(void);
+void alarm_Init(void);
+void alarm_TurnOn(void);
+void alarm_TurnOff(void);
+void alarm_VolumeDown(void);
+void alarm_VolumeUp(void);
+void alarm_MoveLeft(void);
+void alarm_MoveRight(void);
+void alarm_SetAlarmTime(char number);
+char* alarm_GetAlarmTime(void);
+void alarm_ToggleActive(void);
+void alarm_SetUserAnswer(char button);
+void alarm_CheckUserAnswer(void);
+void alarm_SetButton(char button);
 
 #endif /* ALARM_H_ */

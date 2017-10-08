@@ -2,15 +2,14 @@
 #ifndef CALCULATOR_H_
 #define CALCULATOR_H_
 
-#include <string.h>
-#include <stdlib.h>
-#include <time.h>
-
-typedef struct _Problem{ char arr[5]; int answer; }Problem;
+typedef struct _Problem{ char arr[5]; char answer[5]; }Problem;
 extern Problem problem;
 
-void calculatorInit(void);
-void setProblem(Problem* pProblem);
-int getRandom(int max);
+void calculator_Init(void);
+void gen_Problem(void);
+void subtract(int a, int b, int c, char operator);
+void divide(int a, int b, char operator);
+void set_Problem(int a, int b, int c, char operator);
+int get_Random(int max);
 
 #endif

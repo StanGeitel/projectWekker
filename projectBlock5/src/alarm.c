@@ -1,36 +1,157 @@
 
+#include <stdbool.h>
+#include <string.h>
 #include "alarm.h"
+#include "GPIO.h"
+#include "LPC1769.h"
+#include "display.h"
+#include "calculator.h"
+#include "RealTimeClock.h"
 
 Problem problem;
+char alarmTime[5] = {'0','0',':','0','0'};
+char userAnswer[5] = {' ',' ',' ',' ',' '};
+unsigned char volume = 1, posAlarmTime = 0, posUserAnswer = 4;
+bool settingAlarmTime = false, alarmOn = false, alarmActive = false;
 
-void alarmInit(void){
-	//I2C_Init();
-	//RTC_Init();
-	displayInit();
-	calculatorInit();
-	//init counter for seconds
-	//setMessage(getTime());
+void alarm_Init(void){
+	calculator_Init();
+	GPIO_SetDIR(2, (0x07 << 2));
+	GPIO_Set(2, (0x07 << 2));
 }
 
-//IRHandler for rtc 1HZ
+void alarm_TurnOn(void){
+	alarmOn = true;
+	gen_Problem();
+	display_Set(problem.arr);
+	display_Write();
+	GPIO_Clear(2, (0x1 << (volume + 1)));
+}
 
-//IRHandler for display writeToDisplay();
+void alarm_TurnOff(void){
+	alarmOn = false;
+	volume = 1;
+	GPIO_Set(2, (0x07 << 2));
+}
 
-//IRHandler for alarm PWM for audiosignals???
+void alarm_VolumeDown(void){
+	volume == 1 ? volume == 1 : volume--;
+	GPIO_Set(2, (0x07 << 2));
+	GPIO_Clear(2, (0x1 << (volume + 1)));
+}
 
+void alarm_VolumeUp(void){
+	volume == 3 ? volume == 3 : volume++;
+	GPIO_Set(2, (0x07 << 2));
+	GPIO_Clear(2, (0x1 << (volume + 1)));
+}
 
-void solveProblem(void){
-	Problem* pProblem = &problem;
-	setProblem(pProblem);
-	setMessage(pProblem->arr);
-	int userAnswer;
-	do {
-		do{
-			scanf("%d", &userAnswer); //get an answer via remote
-		}while(!userAnswer);
-		if (userAnswer != pProblem->answer) {
-			//volumeUp();
+void alarm_MoveLeft(void){
+	if(alarmOn){
+		posUserAnswer == 1 ? posUserAnswer == 1 : posUserAnswer--;
+	}
+	if(settingAlarmTime){
+		posAlarmTime == 0 ? posAlarmTime == 0 : posAlarmTime--;
+	}
+}
+
+void alarm_MoveRight(void){
+	if(alarmOn){
+		posUserAnswer == 4 ? posUserAnswer == 4 : posUserAnswer++;
+	}
+	if(settingAlarmTime){
+		posAlarmTime == 4 ? posAlarmTime == 4 : posAlarmTime++;
+	}
+}
+
+void alarm_SetAlarmTime(char number){
+	if(posAlarmTime > 1){
+		alarmTime[posAlarmTime + 1] = number;
+	}
+	alarmTime[posAlarmTime] = number;
+	display_Set(alarmTime);
+	display_Write();
+}
+
+char* alarm_GetAlarmTime(void){
+	return alarmTime;
+}
+
+void alarm_ToggleActive(void){
+	alarmActive = ~alarmActive;
+}
+
+void alarm_SetUserAnswer(char button){
+	userAnswer[posUserAnswer] = button;
+	display_Set(userAnswer);
+	display_Write();
+}
+
+void alarm_CheckUserAnswer(void){
+	if(strcmp(userAnswer, problem.answer) == 0){
+		alarm_TurnOff();
+		display_Set(RTC_getTime());
+		display_Write();
+	}
+	else{
+		display_Set("xxxxx");
+		display_Write();
+		for(int i =0; i < 5000; i++){
+			asm("nop");
 		}
-	} while ( userAnswer != pProblem->answer);
+		display_Set(problem.arr);
+		display_Write();
+		alarm_VolumeUp();
+	}
+	posUserAnswer = 4;
+	for(int i = 0; i < 5; i++){
+		userAnswer[i] = ' ';
+	}
 }
+
+void alarm_SetButton(char button){
+	if(alarmOn){
+		if((button < 8)){
+			alarm_SetUserAnswer(button + 48);
+		}
+		if(button == buttonOk){
+			alarm_CheckUserAnswer();
+		}
+	}
+	else if(settingAlarmTime){
+		if(button < 9){
+			alarm_SetAlarmTime(button + 48);
+		}
+		else{
+			switch(button){
+			case setAlarm:
+			case buttonOk:
+			{settingAlarmTime = false; posAlarmTime = 0; display_Set(alarm_GetAlarmTime()); display_Write();}
+				break;
+			case buttonVolumeDown:	alarm_VolumeDown();
+				break;
+			case buttonVolumeUp:	alarm_VolumeUp();
+				break;
+			case buttonLeft:		alarm_MoveLeft();
+				break;
+			case buttonRight:		alarm_MoveRight();
+				break;
+			}
+		}
+	}
+	else{
+		switch(button){
+		case setAlarm:	{settingAlarmTime = true; display_Set(alarmTime); display_Write();}
+			break;
+		case buttonVolumeDown:		alarm_VolumeDown();
+			break;
+		case buttonVolumeUp:		alarm_VolumeUp();
+			break;
+
+		case setActive:				alarm_ToggleActive();
+			break;
+		}
+	}
+}
+
 

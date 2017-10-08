@@ -3,7 +3,7 @@
 
 void GPIO_Int_Init(unsigned char port){
 	ISER0 |= 1 << 21;		//enable external interrupt 3
-	GPIO_Int_Clear(port,0xFFF);
+	GPIO_IntClt(port) &= ~0xFF;
 }
 
 void GPIO_SetDIR(unsigned char port, int pins){
@@ -26,11 +26,11 @@ int GPIO_Read(unsigned char port){
 	return GPIO_PIN(port);
 }
 
-void GPIO_Int_ClearFlag(unsigned char port, int pins){
+void GPIO_Int_Clear(unsigned char port, int pins){
 	GPIO_IntClt(port) |= pins & port? GPIO2_IntPins : GPIO0_IntPins;
 }
 
-unsigned char GPIO_Int_Status(){
+unsigned char GPIO_Int_Status(void){
 	return (GPIO_IntStatus >> 1) + (GPIO_IntStatus & 1);	//return bit 0 and 2 as bit 0 and 1
 }
 

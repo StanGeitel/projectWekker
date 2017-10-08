@@ -2,6 +2,19 @@
 #ifndef LPC1769_H_
 #define LPC1769_H_
 
+#define CPU_F	120
+#define PLL			0x400fc080
+#define PLL_CON		(*(unsigned int *)	(PLL))
+#define PLL_CFG		(*(unsigned int *)	(PLL + 0x4))
+#define PLL_STAT	(*(unsigned int *)	(PLL + 0x8))
+#define PLL_FEED	(*(unsigned int *)	(PLL + 0xC))
+#define CCLKCFG		(*(unsigned int *)	(0x400FC104))
+#define CLKSRCSEL	(*(unsigned int *)	(0x400FC10C))
+#define CLKOUTCFG	(*(unsigned int *)	(0x400FC108))
+#define SCS			(*(unsigned int *)	(0x400FC1A0))
+
+#define AIRCR		(*(unsigned int *)	(0xE000ED0C))
+
 #define PCONP		(*(unsigned int *)	(0x400FC0C4))
 #define PCLKSEL0	(*(unsigned int *)	(0x400FC1A8))
 #define PCLKSEL1	(*(unsigned int *)	(0x400FC1AC))
@@ -48,9 +61,15 @@
 #define T_CR(timer, CR) (*(unsigned int *)	(T(timer) + 0x2C + (CR * 0x4)))
 #define T_EMR(timer) 	(*(unsigned int *)	(T(timer) + 0x3C))
 #define T_CTCR(timer) 	(*(unsigned int *)	(T(timer) + 0x70))
-#define PWM1PCR				(*(unsigned int *)	(0x4001804C))
-#define PWM1LER				(*(unsigned int *)	(0x40018050))
+#define PWM_PCR			(*(unsigned int *)	(0x4001804C))
+#define PWM_LER			(*(unsigned int *)	(0x40018050))
 
+//---------------------------------------
+
+#define RIT_COMP			(*(unsigned int *)	(0x400B0000))
+#define RIT_MASK			(*(unsigned int *)	(0x400B0004))
+#define RIT_CTRL			(*(unsigned int *)	(0x400B0008))
+#define RIT_COUNTER			(*(unsigned int *)	(0x400B000C))
 
 
 //-------------------GPIO------------------//
@@ -82,13 +101,18 @@
 
 //------------------------------------
 
-#define I2C		0x4005C000
+#define I2C			0x4001C000
 #define I2C_CONSET  (*(unsigned int *)	(I2C)) // Control Set Register
 #define I2C_STAT  	(*(unsigned int *)	(I2C + 0x4)) // status register
 #define I2C_DAT  	(*(unsigned int *)	(I2C + 0x8)) // data register
 #define I2C_SCLH  	(*(unsigned int *)	(I2C + 0x10)) // SCH Duty Cycle Register High Half Word
 #define I2C_SCLL  	(*(unsigned int *)	(I2C + 0x14)) // SCL Duty Cycle Register Low Half Word
 #define I2C_CONCLR  (*(unsigned int *)	(I2C + 0x18)) // clear control register
+
+void system_Init(void);
+void system_Reset(void);
+void system_SetClock(void);
+void system_SetPinOut(void);
 
 #endif
 

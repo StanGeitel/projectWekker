@@ -33,11 +33,10 @@ void timer_SetPR(unsigned char timer, int prescaler);
 void timer_SetMCR(unsigned char timer, unsigned char MR, unsigned char data);
 void timer_SetMR(unsigned char timer, unsigned char MR, short count);
 void timer_SetCTCR(unsigned char timer, unsigned char mode, unsigned char cap);
-void timer_EnablePWM(unsigned char channels);
-void timer_SetPWMMR(unsigned char MR, unsigned char count);
+void timer_SetCCR(unsigned char timer, unsigned char cap, unsigned char data);
+int timer_GetCR(unsigned char timer, unsigned char cap);
+void timer_PWM_Enable(unsigned char channels);
+void timer_PWM_SetMR(unsigned char MR, int count);
 int timer_GetCount(unsigned char timer);
-void timer_IncreasePWMMR(unsigned char MR);
-void timer_DecreasePWMMR(unsigned char MR);
-short timer_GetMR(unsigned char timer, unsigned char MR);
 
 #endif /* TIMER_H_ */
