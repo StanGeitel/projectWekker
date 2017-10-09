@@ -2,7 +2,7 @@
 #ifndef LPC1769_H_
 #define LPC1769_H_
 
-#define CPU_F	120
+#define CPU_FREQ	120000000
 #define PLL			0x400fc080
 #define PLL_CON		(*(unsigned int *)	(PLL))
 #define PLL_CFG		(*(unsigned int *)	(PLL + 0x4))
@@ -112,7 +112,7 @@
 void system_Init(void);
 void system_Reset(void);
 void system_SetClock(void);
-void system_SetPins(void);
+void system_SetPinOut(void);
 
 #endif
 

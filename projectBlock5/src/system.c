@@ -1,14 +1,12 @@
 #include "LPC1769.h"
 
 void system_Init(void){
-	system_Reset();
 	system_SetClock();
 	system_SetPinOut();
 }
 
 void system_Reset(void){
-	AIRCR |= 1 << 2;		//system reset request
-	AIRCR |= 0x5FA << 16;	//feed
+	AIRCR = 0x5FA << 16 | 1 << 2;	//feed
 }
 
 void system_SetClock(void){
@@ -51,4 +49,5 @@ void system_SetPinOut(void){
 	PIN_SEL0 |= 1 << 31;
 	PIN_SEL1 |= 1 << 5;
 	PIN_SEL3 |= 1 << 22;
+	PIN_SEL4 |= 1;
 }

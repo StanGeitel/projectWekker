@@ -29,6 +29,7 @@ void timer_Init(unsigned char timer, int prescaler){
 		ISER0 |= 1 << 9;
 		break;
 	}
+	timer_Disable(timer);
 	timer_ClearIR(timer);
 	timer_SetPR(timer, prescaler);
 }
@@ -60,7 +61,7 @@ void timer_SetMCR(unsigned char timer, unsigned char MR, unsigned char data){
 	T_MCR(timer) |= data << (MR*3);
 }
 
-void timer_SetMR(unsigned char timer, unsigned char MR, short count){
+void timer_SetMR(unsigned char timer, unsigned char MR, int count){
 	T_MR(timer, MR) = count;
 }
 

@@ -1,7 +1,8 @@
 #include "LPC1769.h"
 
-void RIT_Init(void){
+void RIT_Init(int counterValue){
 	PCONP |= 1 << 16;
+	RIT_COMP = counterValue;
 	PCLKSEL1 |= 1 << 26;
 	ISER0 |= 1 << 29;
 	RIT_CTRL |= 0x3;

@@ -31,7 +31,7 @@ void timer_Disable(unsigned char timer);
 void timer_Reset(unsigned char timer);
 void timer_SetPR(unsigned char timer, int prescaler);
 void timer_SetMCR(unsigned char timer, unsigned char MR, unsigned char data);
-void timer_SetMR(unsigned char timer, unsigned char MR, short count);
+void timer_SetMR(unsigned char timer, unsigned char MR, int count);
 void timer_SetCTCR(unsigned char timer, unsigned char mode, unsigned char cap);
 void timer_SetCCR(unsigned char timer, unsigned char cap, unsigned char data);
 int timer_GetCR(unsigned char timer, unsigned char cap);
