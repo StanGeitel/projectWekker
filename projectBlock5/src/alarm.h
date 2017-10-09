@@ -8,7 +8,7 @@
 #ifndef ALARM_H_
 #define ALARM_H_
 
-#define button0				0
+#define button0				24	//10
 #define button1 			1
 #define button2 			2
 #define button3 			3
@@ -24,7 +24,7 @@
 #define buttonVolumeUp 		37  //vol+
 #define buttonVolumeDown 	101 //vol-
 #define setAlarm 			25	//11 1-
-#define setActive			50	//ook niet
+#define setActive			26	//12
 
 void alarm_Init(void);
 void alarm_TurnOn(void);

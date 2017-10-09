@@ -5,6 +5,7 @@
 #include "alarm.h"
 #include "RealTimeClock.h"
 #include "display.h"
+#include <stdio.h>
 
 unsigned char bit = 0;
 short data = 0;
@@ -13,8 +14,8 @@ short data = 0;
 void IR_Init(void){
 	PIN_SEL0 &= ~(0x3 << 8);
 
-	GPIO_Int_Init(IR_IOPORT);
 	GPIO_Int_EnableF(IR_IOPORT,1 << IR_PIN);
+	GPIO_Int_Init(IR_IOPORT);
 
 	timer_Init(IR_TIMER,3);
 	timer_SetCCR(IR_TIMER,IR_CAPTURE,0x5);
@@ -25,7 +26,7 @@ void TIMER2_IRQHandler(void){
 	timer_ClearIR(IR_TIMER);
 
 	int time = timer_GetCR(IR_TIMER, IR_CAPTURE);
-	PIN_SEL0 &= ~(0x3 << 8); 											//set pin as GPIO
+	PIN_SEL0 &= ~(0x3 << 8); 										//set pin as GPIO
 
 	if(bit < SIRC_LENGTH){
 		if(time < MAX_TIME_BIT0 && time > MIN_TIME_BIT0){
@@ -39,9 +40,8 @@ void TIMER2_IRQHandler(void){
 		}
 	}else if(bit == SIRC_LENGTH){
 		data = (data & ~0x1F) >> 5;
+		printf("button: %d", data + 1);
 		alarm_SetButton(data + 1);
-	}else if(bit == SIRC_LENGTH && ((data >> 7) & 0x1F) == IR_ADDRESS){						//if end of transmission and IR address matches
-		//do something with data
 	}
 }
 

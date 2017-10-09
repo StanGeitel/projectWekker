@@ -9,7 +9,7 @@ char RTC_time[5] =  {'0','0',':','0','0'};
 
 void RTC_Init(char seconde, char minute, char hour)
 {
-	I2C_Init();
+	//I2C_Init();
 	char sec = RTC_decToBcd(seconde);
 	char min = RTC_decToBcd(minute);
 	char uur = RTC_decToBcd(hour);
@@ -40,7 +40,7 @@ void TIMER3_IRQHandler(void)
 	timer_ClearIR(TIMER3);
 	printf("it works \n");
 	printf("min: %d, uur: %d \n", RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Minuten_Register)), RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Hours_Register)));
-	//RTC_setTime(RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Minuten_Register)), RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Hours_Register)));
+	RTC_setTime(RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Minuten_Register)), RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Hours_Register)));
 }
 
 void RTC_SetSQWOutput(int Hz)
@@ -96,7 +96,7 @@ void RTC_setTime(int min, int hour){
     RTC_time[2] = ':';
     RTC_time[3] = (char)(hour/10) + '0';
     RTC_time[4] = (char)(hour%10) + '0';
-    display_Set(RTC_time);
+    display_Set("Hello");
     display_Write();
 }
 
