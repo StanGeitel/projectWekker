@@ -69,7 +69,9 @@ void alarm_SetAlarmTime(char number){
 	if(posAlarmTime > 1){
 		alarmTime[posAlarmTime + 1] = number;
 	}
-	alarmTime[posAlarmTime] = number;
+	else if(posAlarmTime <= 1){
+		alarmTime[posAlarmTime] = number;
+	}
 	display_Set(alarmTime);
 	display_Write();
 }
@@ -95,7 +97,7 @@ void alarm_CheckUserAnswer(void){
 		display_Write();
 	}
 	else{
-		display_Set("xxxxx");
+		display_Set("Porno");
 		display_Write();
 		for(int i =0; i < 5000; i++){
 			asm("nop");
@@ -112,15 +114,22 @@ void alarm_CheckUserAnswer(void){
 
 void alarm_SetButton(char button){
 	if(alarmOn){
-		if((button < 8)){
+		if(button <= 9){
 			alarm_SetUserAnswer(button + 48);
 		}
-		if(button == buttonOk){
-			alarm_CheckUserAnswer();
+		else{
+			switch(button){
+			case buttonOk:			alarm_CheckUserAnswer();
+				break;
+			case buttonLeft:		alarm_MoveLeft();
+				break;
+			case buttonRight:		alarm_MoveRight();
+				break;
+			}
 		}
 	}
 	else if(settingAlarmTime){
-		if(button < 9){
+		if(button <= 9){
 			alarm_SetAlarmTime(button + 48);
 		}
 		else{
@@ -128,10 +137,6 @@ void alarm_SetButton(char button){
 			case setAlarm:
 			case buttonOk:
 			{settingAlarmTime = false; posAlarmTime = 0; display_Set(alarm_GetAlarmTime()); display_Write();}
-				break;
-			case buttonVolumeDown:	alarm_VolumeDown();
-				break;
-			case buttonVolumeUp:	alarm_VolumeUp();
 				break;
 			case buttonLeft:		alarm_MoveLeft();
 				break;
@@ -142,15 +147,29 @@ void alarm_SetButton(char button){
 	}
 	else{
 		switch(button){
-		case setAlarm:	{settingAlarmTime = true; display_Set(alarmTime); display_Write();}
+		case setAlarm:
+		{settingAlarmTime = true; display_Set(alarmTime); display_Write();}
 			break;
 		case buttonVolumeDown:		alarm_VolumeDown();
 			break;
 		case buttonVolumeUp:		alarm_VolumeUp();
 			break;
-
 		case setActive:				alarm_ToggleActive();
 			break;
 		}
 	}
 }
+
+
+//void alarm_WriteDisplay(bool setting){
+//	if(setting){
+//		display_Set(alarmTime);
+//		display_Write();
+//		for(int i = 0; i < 5000; i++){
+//			asm("nop");
+//		}
+//		char alarm_Time[] = alarmTime;
+//		alarm_Time[]
+//		display_Set()
+//	}
+

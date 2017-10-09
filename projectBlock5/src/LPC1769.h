@@ -20,6 +20,7 @@
 #define PCLKSEL1	(*(unsigned int *)	(0x400FC1AC))
 #define ISER0		(*(unsigned int *)	(0xE000E100))
 #define ISER1		(*(unsigned int *)	(0xE000E104))
+#define ICPR0  		(*(unsigned int *) 	(0xE000E280))
 
 #define PIN_SEL0	(*(unsigned int *)	(0x4002C000))
 #define PIN_SEL1	(*(unsigned int *)	(0x4002C004))
@@ -108,6 +109,10 @@
 #define I2C_SCLH  	(*(unsigned int *)	(I2C + 0x10)) // SCH Duty Cycle Register High Half Word
 #define I2C_SCLL  	(*(unsigned int *)	(I2C + 0x14)) // SCL Duty Cycle Register Low Half Word
 #define I2C_CONCLR  (*(unsigned int *)	(I2C + 0x18)) // clear control register
+
+
+
+
 
 void system_Init(void);
 void system_Reset(void);

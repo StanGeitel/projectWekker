@@ -23,24 +23,25 @@ void gen_Problem(void) {
 			break;
 	case 2: {c = a * b; set_Problem(a, b, c, '*');}
 			break;
-	case 3: {divide(a, b, '/');}
+	case 3: {divide();}
 			break;
 	}
 }
 
 void subtract(int a, int b, int c, char operator){
-	int d = a, e = b, f = c;
-	while(d < e){
-		d = get_Random(99);
-		e = get_Random(99);
+	while(a < b){
+		a = get_Random(99);
+		b = get_Random(99);
 	}
-	f = d - e;
-	set_Problem(d, e, f, operator);
+	int d = a - b;
+	set_Problem(a, b, d, operator);
 }
 
-void divide(int a, int b, char operator){
-	float d = a, e = b;
-	float f = d / e;
+void divide(void){
+	int d = get_Random(9);
+	int e = get_Random(9);
+	int f = d * e;
+	char operator = '/';
 	while(f - (int)f != 0){
 		d = get_Random(99);
 		e = get_Random(99);

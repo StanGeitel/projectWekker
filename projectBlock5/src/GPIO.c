@@ -3,6 +3,7 @@
 
 void GPIO_Int_Init(unsigned char port){
 	ISER0 |= 1 << 21;		//enable external interrupt 3
+	ICPR0 |= 1 << 21;
 	GPIO_IntClt(port) &= ~0xFF;
 }
 
