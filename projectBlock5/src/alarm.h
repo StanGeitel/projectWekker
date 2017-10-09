@@ -8,33 +8,36 @@
 #ifndef ALARM_H_
 #define ALARM_H_
 
-#define button1 			0
-#define button2 			1
-#define button3 			2
-#define button4 			3
-#define button5				4
-#define button6			 	5
-#define button7 			6
-#define button8 			7
-#define button9 			8
-#define buttonLeft			9	//nee toch niet
-#define buttonRight			10	//ook niet
-#define buttonEnter			11	//ook niet
-#define buttonVolumeUp 		36  //vol+
-#define buttonVolumeDown 	100 //vol-
-#define statusAlarm 		24	//11 1-
+#define button0				0
+#define button1 			1
+#define button2 			2
+#define button3 			3
+#define button4 			4
+#define button5				5
+#define button6			 	6
+#define button7 			7
+#define button8 			8
+#define button9 			9
+#define buttonLeft			10	//nee toch niet
+#define buttonRight			11	//ook niet
+#define buttonOk			12	//ook niet
+#define buttonVolumeUp 		37  //vol+
+#define buttonVolumeDown 	101 //vol-
+#define setAlarm 			25	//11 1-
+#define setActive			50	//ook niet
 
 void alarm_Init(void);
-void alarm_On(void);
-void check_User_Answer(void);
-void alarm_Off(void);
-void down_Volume(void);
-void up_Volume(void);
-void set_Alarm_Time(char number);
-char* get_Alarm_Time(void);
-void setButton(char button);
-void move_Left(void);
-void move_Right(void);
-void set_User_Answer(char button);
+void alarm_TurnOn(void);
+void alarm_TurnOff(void);
+void alarm_VolumeDown(void);
+void alarm_VolumeUp(void);
+void alarm_MoveLeft(void);
+void alarm_MoveRight(void);
+void alarm_SetAlarmTime(char number);
+char* alarm_GetAlarmTime(void);
+void alarm_ToggleActive(void);
+void alarm_SetUserAnswer(char button);
+void alarm_CheckUserAnswer(void);
+void alarm_SetButton(char button);
 
 #endif /* ALARM_H_ */

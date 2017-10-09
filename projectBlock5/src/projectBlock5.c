@@ -12,39 +12,33 @@
 #include "LPC17xx.h"
 #endif
 
-<<<<<<< HEAD
 #include "LPC1769.h"
-
 #include "display.h"
 #include "sound.h"
-=======
 #include <cr_section_macros.h>
-
-#include <stdio.h>
-#include "alarm.h"
 #include "LPC1769.h"
 #include "display.h"
->>>>>>> 0797727b13ba934defffc04b08691aa6fce6326b
+#include "RealTimeClock.h"
+#include "alarm.h"
 
 int main(void) {
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-	sound_Init(1);
-
-
-=======
-=======
-	RIT_COUNTER = 0x0;
-
->>>>>>> 35cac88e1be13e7ff4577c5f5c863bdab4d2ab96
-	alarm_Init();
+	system_Init();
 	display_Init();
-	alarm_On();
->>>>>>> 0797727b13ba934defffc04b08691aa6fce6326b
+//	sound_Init();
+//	RTC_Init(0, 10, 10);
+	alarm_Init();
+	alarm_TurnOn();
+//	alarm_VolumeUp();
+//	alarm_VolumeDown();
+//	alarm_SetButton(setAlarm);
+//	alarm_SetButton(button4);
+//	alarm_MoveLeft();
+//	alarm_MoveRight();
+//	alarm_SetButton(button7);
+//	alarm_SetButton(setAlarm);
+//	alarm_ToggleActive();
+//	alarm_CheckUserAnswer();
+
 	while(1);
-
+	return(0);
 }
-
-
-

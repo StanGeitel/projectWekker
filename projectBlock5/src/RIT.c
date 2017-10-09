@@ -6,6 +6,7 @@ void RIT_Init(int counterValue){
 	PCLKSEL1 |= 1 << 26;
 	ISER0 |= 1 << 29;
 	RIT_CTRL |= 0x3;
+	RIT_COUNTER = 0;
 }
 
 void RIT_ClearIR(void){

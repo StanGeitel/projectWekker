@@ -3,14 +3,17 @@
 #include "LPC1769.h"
 #include "timer.h"
 #include "display.h"
+#include <stdio.h>
 
 char RTC_time[5] =  {'0','0',':','0','0'};
 
 void RTC_Init(char seconde, char minute, char hour)
 {
+	I2C_Init();
 	char sec = RTC_decToBcd(seconde);
 	char min = RTC_decToBcd(minute);
 	char uur = RTC_decToBcd(hour);
+
 	I2C_WriteData(RTC_SlaveAddress, RTC_Secondes_Register, sec);
 	I2C_WriteData(RTC_SlaveAddress, RTC_Minuten_Register, min); //min is hex 0x11
 	I2C_WriteData(RTC_SlaveAddress, RTC_Hours_Register, uur);
@@ -27,17 +30,17 @@ void RTC_Init(char seconde, char minute, char hour)
 	timer_SetMCR(TIMER3,MR0,0x3);
 
 	timer_Enable(TIMER3);
+
+	printf("a \n");
 }
 
 void TIMER3_IRQHandler(void)
 {
-	timer_ClearIR(RTC_TIMER);
+	//timer_ClearIR(RTC_TIMER);
 	timer_ClearIR(TIMER3);
-<<<<<<< HEAD
-	printf("It works! \n");
-=======
->>>>>>> 0797727b13ba934defffc04b08691aa6fce6326b
-	RTC_setTime(RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Minuten_Register)), RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Hours_Register)));
+	printf("it works \n");
+	printf("min: %d, uur: %d \n", RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Minuten_Register)), RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Hours_Register)));
+	//RTC_setTime(RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Minuten_Register)), RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Hours_Register)));
 }
 
 void RTC_SetSQWOutput(int Hz)
@@ -79,7 +82,7 @@ unsigned char RTC_ReadData(unsigned char slaveAddress, unsigned char dataRegiste
 
 char RTC_decToBcd(char val)
 {
-  return (((val / 10) << 4) | (val %10));
+	return (((val / 10) << 4) | (val %10));
 }
 
 char RTC_bcdToDec(char val)
@@ -94,6 +97,7 @@ void RTC_setTime(int min, int hour){
     RTC_time[3] = (char)(hour/10) + '0';
     RTC_time[4] = (char)(hour%10) + '0';
     display_Set(RTC_time);
+    display_Write();
 }
 
 char* RTC_getTime(){
