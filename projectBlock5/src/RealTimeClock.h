@@ -13,14 +13,12 @@
 #define RTC_SlaveAddress		0xD0
 
 #define RTC_TIMER TIMER3
+
 #define TIMER TIMER0
 
-void RTC_TimerInit();
 void RTC_Init(char seconde, char minute, char hour);
 void RTC_WriteData(unsigned char slaveAddress, unsigned char dataRegister, unsigned char data);
 unsigned char RTC_ReadData(unsigned char slaveAddress, unsigned char dataRegister);
-unsigned char RTC_GetMinutes();
-unsigned char RTC_GetHours();
 void RTC_SetSQWOutput(int Hz);
 char RTC_bcdToDec(char val);
 char RTC_decToBcd(char val);
