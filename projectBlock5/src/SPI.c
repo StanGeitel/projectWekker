@@ -5,7 +5,7 @@ void SPI_Init(void){
 	PCLKSEL1 |= 1 << 10;
 	ISER0 |= 1 << 14;
 
-	SSP_CPSR |= 0x2;
+	SSP_CPSR = 12;
 	SSP_CR0 |= 0xF;
 	SSP_CR1 |= 0x2;
 }

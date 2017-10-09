@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include <stdio.h>
+
 void calculator_Init(void) {
 	srand(time(NULL));
 }
@@ -19,7 +21,7 @@ void gen_Problem(void) {
 			break;
 	case 1: {c = a - b; subtract(a, b, c, '-');}
 			break;
-	case 2: {c = a * b; set_Problem(a, b, c, 'x');}
+	case 2: {c = a * b; set_Problem(a, b, c, '*');}
 			break;
 	case 3: {divide(a, b, '/');}
 			break;
@@ -37,18 +39,21 @@ void subtract(int a, int b, int c, char operator){
 }
 
 void divide(int a, int b, char operator){
-	int d = a, e = b;
-	float f = (float)d / (float)e;
-	while(!(ceilf(f)== f && floorf(f) == f)){
+	float d = a, e = b;
+	float f = d / e;
+	while(f - (int)f != 0){
 		d = get_Random(99);
 		e = get_Random(99);
-		f = (float)d / (float)e;
+		while(e == 0){
+			e = get_Random(99);
+		}
+		f = d / e;
 	}
 	set_Problem(d, e, f, operator);
 }
 
 void set_Problem(int a, int b, int c,  char operator){
-	char arr[5] = {' ',' ',' ',' ',' '};
+	char arr[5] = {' ','0',' ',' ','0'};
 		if(a / 10){
 			arr[0] = (char)((a / 10) + '0');
 		}
@@ -66,7 +71,6 @@ void set_Problem(int a, int b, int c,  char operator){
 		else if(b / 10) arr[4] = '0';
 	strcpy(problem.arr, arr);
 	char answer[5] = {' ',' ',' ',' ','0'};
-		answer[0] = ' ';
 		if(c / 1000){
 			answer[1] = (char)((c / 1000) + '0');
 		}

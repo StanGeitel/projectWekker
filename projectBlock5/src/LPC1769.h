@@ -101,7 +101,7 @@
 
 //------------------------------------
 
-#define I2C		0x4005C000
+#define I2C			0x4001C000
 #define I2C_CONSET  (*(unsigned int *)	(I2C)) // Control Set Register
 #define I2C_STAT  	(*(unsigned int *)	(I2C + 0x4)) // status register
 #define I2C_DAT  	(*(unsigned int *)	(I2C + 0x8)) // data register
@@ -112,7 +112,7 @@
 void system_Init(void);
 void system_Reset(void);
 void system_SetClock(void);
-void system_SetPins(void);
+void system_SetPinOut(void);
 
 #endif
 

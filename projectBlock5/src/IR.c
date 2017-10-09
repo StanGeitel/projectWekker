@@ -39,7 +39,7 @@ void TIMER2_IRQHandler(void){
 		}
 	}else if(bit == SIRC_LENGTH){
 		data = (data & ~0x1F) >> 5;
-		setButton(data);
+		alarm_SetButton(data + 1);
 	}else if(bit == SIRC_LENGTH && ((data >> 7) & 0x1F) == IR_ADDRESS){						//if end of transmission and IR address matches
 		//do something with data
 	}
@@ -47,22 +47,10 @@ void TIMER2_IRQHandler(void){
 
 void EINT3_IRQHandler(void){
 	timer_Reset(IR_TIMER);
-<<<<<<< HEAD
 	GPIO_Int_Clear(IR_IOPORT, 1 << IR_PIN);										//set pin as capture pin
-
-=======
 	GPIO_Int_Clear(IR_IOPORT, 1 << IR_PIN);
 
 	PIN_SEL0 |= 0x3 << 8;												//set pin as capture pin
->>>>>>> 0797727b13ba934defffc04b08691aa6fce6326b
 	PIN_SEL0 |= 0x3 << 8;	//set pin as capture pin
 }
-
-
-<<<<<<< HEAD
-		display_Set(RTC_getTime());
-		display_Write();
-		break;
-=======
->>>>>>> 0797727b13ba934defffc04b08691aa6fce6326b
 

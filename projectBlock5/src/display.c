@@ -19,7 +19,6 @@ void display_Init(void){
 	SPI_Init();
 	GPIO_SetDIR(DISPLAY_IOPORT,0x30003);
 	GPIO_Clear(DISPLAY_IOPORT, H_STO);								//set H_STO LOW(this has no effect until STO is set to GPIO
-
 	H_RST(LOW);														//reset the shift registers
 	V_RST(HIGH);													//reset the row counter
 	H_RST(HIGH);
@@ -27,17 +26,11 @@ void display_Init(void){
 
 	frontBuffer = malloc(7 * sizeof(int));							//allocate memory for the frontBuffer
 	backBuffer = malloc(7 * sizeof(int));							//allocate memory for the backbuffer
-
 	memset(frontBuffer,0,7*sizeof(int));							//set whole frontBuffer low
 	memset(backBuffer,0,7*sizeof(int));								//set whole backBuffer low
-
 	RIT_Init();
-	RIT_SetCOMP(6666);
+	RIT_SetCOMP(200000);
 	RIT_Enable();
-<<<<<<< HEAD
-=======
-
->>>>>>> 0797727b13ba934defffc04b08691aa6fce6326b
 }
 
 void display_Set(char *message){										//write char array to backBuffer
@@ -62,26 +55,19 @@ void display_Write(void){
 
 void RIT_IRQHandler(void){
 	if(row < 7){
-<<<<<<< HEAD
-		SPI_WriteInteger(~0);							//set prescaler back to its original value
-=======
->>>>>>> 0797727b13ba934defffc04b08691aa6fce6326b
-
-		SPI_WriteInteger(~0);											//clear current row								//set prescaler back to its original value
-
-		RIT_SetCOMP(6666);
-		while(!(GPIO_Read(DISPLAY_IOPORT) & H_STO));								//wait until H_STO is high so you know the row is cleared
-
-		V_CLK(HIGH);													//up the row counter
+		SPI_WriteInteger(~0);											//clear current row
+		RIT_SetCOMP(200000);											//set prescaler back to its original value
+		while(!(GPIO_Read(DISPLAY_IOPORT) & H_STO));					//wait until H_STO is high so you know the row is cleared
+		V_CLK(HIGH);		//up the row counter
+		asm("nop");
 		V_CLK(LOW);
-
 		SPI_WriteInteger(~frontBuffer[row]);							//write data to the new row
-
 		row++;
 	}else if(row == 7){													//if all row's have been written
-		V_RST(HIGH);													//reset the row counter
+		V_RST(HIGH);
+		asm("nop");//reset the row counter
 		V_RST(LOW);
-		RIT_SetCOMP(6666*2);
+		RIT_SetCOMP(200000 * 2);
 		if(displayUpdate){												//if new data is ready
 			int *temp = frontBuffer;										//Temporally store the base address of the current frontBuffer
 			frontBuffer = backBuffer;									//set the base address of the backBuffer with all its new data in frontBuffer

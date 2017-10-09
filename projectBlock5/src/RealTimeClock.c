@@ -9,9 +9,11 @@ char RTC_time[5] =  {'0','0',':','0','0'};
 
 void RTC_Init(char seconde, char minute, char hour)
 {
+	I2C_Init();
 	char sec = RTC_decToBcd(seconde);
 	char min = RTC_decToBcd(minute);
 	char uur = RTC_decToBcd(hour);
+
 	I2C_WriteData(RTC_SlaveAddress, RTC_Secondes_Register, sec);
 	I2C_WriteData(RTC_SlaveAddress, RTC_Minuten_Register, min); //min is hex 0x11
 	I2C_WriteData(RTC_SlaveAddress, RTC_Hours_Register, uur);
@@ -37,6 +39,7 @@ void TIMER3_IRQHandler(void)
 	//timer_ClearIR(RTC_TIMER);
 	timer_ClearIR(TIMER3);
 	printf("it works \n");
+	printf("min: %d, uur: %d \n", RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Minuten_Register)), RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Hours_Register)));
 	//RTC_setTime(RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Minuten_Register)), RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Hours_Register)));
 }
 
@@ -79,7 +82,7 @@ unsigned char RTC_ReadData(unsigned char slaveAddress, unsigned char dataRegiste
 
 char RTC_decToBcd(char val)
 {
-  return (((val / 10) << 4) | (val %10));
+	return (((val / 10) << 4) | (val %10));
 }
 
 char RTC_bcdToDec(char val)
