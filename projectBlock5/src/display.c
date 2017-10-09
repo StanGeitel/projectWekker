@@ -29,8 +29,7 @@ void display_Init(void){
 	backBuffer = malloc(7 * sizeof(int));							//allocate memory for the backbuffer
 	memset(frontBuffer,0,7*sizeof(int));							//set whole frontBuffer low
 	memset(backBuffer,0,7*sizeof(int));								//set whole backBuffer low
-	RIT_Init();
-	RIT_SetCOMP(200000);
+	RIT_Init(200000);
 	RIT_Enable();
 }
 
