@@ -4,10 +4,14 @@
 typedef struct {
 	int sampleRate;
 	int size;
-	const unsigned char data[];
+	unsigned char data[];
 }audioFile;
+
 
 extern const audioFile sineWave;
 extern const audioFile wakeUp;
+extern const audioFile buzzer;
+extern const audioFile airRaid;
+extern const audioFile powerOff;
 
 #endif

@@ -23,7 +23,7 @@ void sound_Init(void){
 
 void sound_Select(audioFile *newFile, short speed){
 	file = newFile;
-	timer_SetPR(SAMPLE_TIMER, 10884 );
+	timer_SetPR(SAMPLE_TIMER, CPU_FREQ/ file->sampleRate/speed );
 }
 
 void sound_Play(void){
@@ -52,7 +52,12 @@ void sound_SetVolume(unsigned char volume){
 
 void TIMER0_IRQHandler(void){
  	timer_ClearIR(SAMPLE_TIMER);
+ 	short data =  file->data[dataOffset];
+ 	data -= 127;
+ 	data *= 2;
+ 	data += 127;
 
-	timer_PWM_SetMR(PWM_CHANNEL,(int) ((float) file->data[dataOffset] * 1.17647 + 0.5));
-	dataOffset == file->size - 1 ? dataOffset = 0 : dataOffset++;
+ 	timer_PWM_SetMR(PWM_CHANNEL,data);
+ 	dataOffset == file->size - 1 ? dataOffset = 0 : dataOffset++;
+ 	dataOffset == file->size - 1 ? dataOffset = 0 : dataOffset++;
 }
