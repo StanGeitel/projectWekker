@@ -12,21 +12,19 @@ short data = 0;
 
 
 void IR_Init(void){
-	PIN_SEL0 &= ~(0x3 << 8);
-
-	GPIO_Int_EnableF(IR_IOPORT,1 << IR_PIN);
-	GPIO_Int_Init(IR_IOPORT);
-
 	timer_Init(IR_TIMER,3);
 	timer_SetCCR(IR_TIMER,IR_CAPTURE,0x5);
 	timer_Enable(IR_TIMER);
+
+	GPIO_Int_EnableF(IR_IOPORT,1 << IR_PIN);
+	GPIO_Int_Init(IR_IOPORT);
 }
 
 void TIMER2_IRQHandler(void){
 	timer_ClearIR(IR_TIMER);
 
 	int time = timer_GetCR(IR_TIMER, IR_CAPTURE);
-	PIN_SEL0 &= ~(0x3 << 8); 										//set pin as GPIO
+	PIN_SEL0 &= ~(0x3 << 8); 	//set pin as GPIO
 
 	if(bit < SIRC_LENGTH){
 		if(time < MAX_TIME_BIT0 && time > MIN_TIME_BIT0){
@@ -47,10 +45,7 @@ void TIMER2_IRQHandler(void){
 
 void EINT3_IRQHandler(void){
 	timer_Reset(IR_TIMER);
-	GPIO_Int_Clear(IR_IOPORT, 1 << IR_PIN);										//set pin as capture pin
-	GPIO_Int_Clear(IR_IOPORT, 1 << IR_PIN);
-
-	PIN_SEL0 |= 0x3 << 8;												//set pin as capture pin
-	PIN_SEL0 |= 0x3 << 8;	//set pin as capture pin
+	GPIO_Int_Clear(IR_IOPORT, 1 << IR_PIN);					//set pin as capture pin
+	PIN_SEL0 |= 0x3 << 8;								//set pin as capture pin
 }
 

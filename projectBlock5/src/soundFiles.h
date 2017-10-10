@@ -9,7 +9,6 @@ typedef struct {
 
 
 extern const audioFile sineWave;
-extern const audioFile wakeUp;
 extern const audioFile buzzer;
 extern const audioFile airRaid;
 extern const audioFile powerOff;

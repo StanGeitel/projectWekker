@@ -19,9 +19,6 @@ void RTC_Init(char seconde, char minute, char hour)
 	I2C_WriteData(RTC_SlaveAddress, RTC_Hours_Register, uur);
 	RTC_SetSQWOutput(0);
 
-	PIN_SEL1 |= 1 << 16;
-	PIN_SEL1 |= 1 << 17;
-
 	timer_Init(TIMER3,0);
 	timer_Disable(TIMER3);
 	timer_ClearIR(TIMER3);

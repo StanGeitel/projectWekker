@@ -3,11 +3,13 @@
 #include "GPIO.h"
 #include "sound.h"
 
+float volumE = 1.0;
 int dataOffset;
 audioFile *file;
 
 void sound_Init(void){
-	GPIO_SetDIR(VOLUME_IOPORT,ALL_PINS);
+	GPIO_SetDIR(AMP_IOPORT,AMP_PINS);
+	GPIO_Set(AMP_IOPORT,AMP_PINS);
 
 	timer_Init(PWM,0);
 	timer_PWM_SetMR(MR0,PWM_RESOLUTION);
@@ -36,29 +38,44 @@ void sound_Pauze(void){
 	timer_PWM_SetMR(PWM_CHANNEL, 0);
 }
 
-void sound_SetVolume(unsigned char volume){
-	GPIO_Clear(VOLUME_IOPORT,ALL_PINS);
-	switch(volume){
+void sound_SetAmplefier(unsigned char amp){
+	GPIO_Set(AMP_IOPORT,AMP_PINS);
+	switch(amp){
 	case 1:
-		GPIO_Set(VOLUME_IOPORT,VOLUME1_PIN);
+		GPIO_Clear(AMP_IOPORT,AMP1_PIN);
 		break;
 	case 2:
-		GPIO_Set(VOLUME_IOPORT,VOLUME2_PIN);
+		GPIO_Clear(AMP_IOPORT,AMP2_PIN);
 		break;
 	case 3:
-		GPIO_Set(VOLUME_IOPORT,VOLUME3_PIN);
+		GPIO_Clear(AMP_IOPORT,AMP3_PIN);
 		break;
 	}
 }
 
+void sound_IncreaseVolume(void){
+	volumE += 0.1;
+}
+
+void sound_DecreaseVolume(void){
+	volumE += 0.1;
+}
+
 void TIMER0_IRQHandler(void){
  	timer_ClearIR(SAMPLE_TIMER);
- 	short data =  file->data[dataOffset];
+
+ 	float data =  file->data[dataOffset];
  	data -= 127;
- 	data *= 2;
+ 	data *= volumE;	//increase amplitude
  	data += 127;
 
- 	timer_PWM_SetMR(PWM_CHANNEL,data);
- 	dataOffset == file->size - 1 ? dataOffset = 0 : dataOffset++;
+ 	//dial back the volumE if data starts clipping
+ 	if(data < 0){
+ 		volumE -= (0 - data) / 127.0;
+ 	}else if(data > PWM_RESOLUTION){
+ 		volumE -= (data - PWM_RESOLUTION) / 127.0;
+ 	}
+
+	timer_PWM_SetMR(PWM_CHANNEL,(int) (data + 0.5));
  	dataOffset == file->size - 1 ? dataOffset = 0 : dataOffset++;
 }
