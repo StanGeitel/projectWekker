@@ -3,6 +3,8 @@
 #define LPC1769_H_
 
 #define CPU_FREQ	120000000
+#define TRUE		1
+#define FALSE		0
 
 #define PLL			0x400fc080
 #define PLL_CON		(*(unsigned int *)	(PLL))
