@@ -27,8 +27,9 @@ void RTC_Init(char seconde, char minute, char hour)
 	timer_Disable(TIMER3);
 	timer_ClearIR(TIMER3);
 	timer_SetCTCR(TIMER3,FALING_EDGE,CAP1);
-	timer_SetMR(TIMER3,MR0,10);
+	timer_SetMR(TIMER3,MR0,20);
 	timer_SetMCR(TIMER3,MR0,0x3);
+	T_TC(TIMER3) = 0;
 
 	timer_Enable(TIMER3);
 
@@ -85,7 +86,7 @@ void TIMER3_IRQHandler(void){
 	//timer_ClearIR(RTC_TIMER);
 	timer_ClearIR(TIMER3);
 	printf("a \n");
-	//RTC_setTime(RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Minuten_Register)), RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Hours_Register)));
+	RTC_setTime(RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Minuten_Register)), RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Hours_Register)));
 }
 
 

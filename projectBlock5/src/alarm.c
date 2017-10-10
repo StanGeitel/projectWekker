@@ -12,10 +12,11 @@
 
 Problem problem;
 
-char alarmTime[5] = {'1','0',':','2','6'};
+char alarmTime[5] = {'1','6',':','3','7'};
 char userAnswer[5] = {' ',' ',' ',' ',' '};
 unsigned char volume = 1, posAlarmTime = 0, posUserAnswer = 4;
 bool settingAlarmTime = false, alarmOn = false, alarmActive = false;
+int setProblemOnScreen = 0;
 
 void alarm_Init(void){
 	system_Init();
@@ -23,18 +24,19 @@ void alarm_Init(void){
 	alarm_Init();
 	//sound_Init();
 	calculator_Init();
-	RTC_Init(0, 30, 10);
+	//RTC_Init(0, 30, 10);
 	RTC_setAlarmTime();
 }
 
 void alarm_TurnOn(void){
+	setProblemOnScreen = 1;
 	alarmOn = true;
 	//sound_Select(&sineWave, 1);
 	//sound_Play();
 	gen_Problem();
 	display_Set(problem.arr);
 	display_Write();
-	GPIO_Clear(2, (0x1 << (volume + 1)));
+	GPIO_Clear(2, (0x1 << (volume + 1))); //???????
 }
 
 void alarm_TurnOff(void){
@@ -167,20 +169,35 @@ void alarm_SetButton(char button){
 
 void RTC_setTime(int min, int hour){
 	char RTC_time[5] =  {'0','0',':','0','0'};
-    RTC_time[0] = (char)(min/10) + '0';
-    RTC_time[1] = (char)(min%10) + '0';
+    RTC_time[0] = (char)(hour/10) + '0';
+    RTC_time[1] = (char)(hour%10) + '0';
     RTC_time[2] = ':';
-    RTC_time[3] = (char)(hour/10) + '0';
-    RTC_time[4] = (char)(hour%10) + '0';
+    RTC_time[3] = (char)(min/10) + '0';
+    RTC_time[4] = (char)(min%10) + '0';
 
-    display_Set(RTC_time);
-    display_Write();
+   	display_Set(RTC_time);
+   	display_Write();
+
+
 
     RTC_getAlarmTime();
 
-	if(strcmp(alarmTime, RTC_time) == 0){
+	int check = 1;
+	for(int i = 0 ; i < 5 ; i++){
+		if(!(alarmTime[i] == RTC_time[i])){
+			check = 0;
+		}
+	}
+	if(check == 1){
+		printf("Alarm aan \n");
 		alarm_TurnOn();
 	}
+
+	/*if(strcmp(alarmTime, RTC_time) == 0){
+		printf("Alarm aan \n");
+		alarm_TurnOn();
+
+	}*/
 }
 
 void RTC_setAlarmTime(void){
