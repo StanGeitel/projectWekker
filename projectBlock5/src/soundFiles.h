@@ -12,6 +12,5 @@ extern const audioFile sineWave;
 extern const audioFile buzzer;
 extern const audioFile airRaid;
 extern const audioFile powerOff;
-extern const audioFile totalySpies;
 
 #endif
