@@ -11,6 +11,8 @@
 #define RTC_Year_Register   	0x06
 #define RTC_Control_Register   	0x07
 #define RTC_Status_Register		0x08
+#define Alarm_Minuts_Register	0x08
+#define Alarm_Hours_Register	0x09
 #define RTC_SlaveAddress		0xD0
 
 
@@ -24,6 +26,12 @@ unsigned char RTC_ReadData(unsigned char slaveAddress, unsigned char dataRegiste
 void RTC_SetSQWOutput(int Hz);
 char RTC_bcdToDec(char val);
 char RTC_decToBcd(char val);
-
+void RTC_setTime(unsigned char min, unsigned char hour);
+void RTC_SetAlarmTime(char number, int posAlarmTime);
+void RTC_printTime(unsigned char min, unsigned char hour);
+unsigned char RTC_getMinuts(void);
+unsigned char RTC_getHours(void);
+unsigned char RTC_getAlarmMinuts(void);
+unsigned char RTC_getAlarmHours(void);
 
 #endif

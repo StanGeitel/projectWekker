@@ -60,7 +60,7 @@ void set_Problem(int a, int b, int c,  char operator){
 		}
 		else if(b / 10) arr[4] = '0';
 	strcpy(problem.arr, arr);
-	char answer[5] = {' ',' ',' ',' ','0'};
+	char answer[5] = {'=',' ',' ',' ','0'};
 		if(c / 1000){
 			answer[1] = (char)((c / 1000) + '0');
 		}
