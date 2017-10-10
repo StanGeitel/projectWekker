@@ -7,8 +7,12 @@
 #include "display.h"
 #include <stdio.h>
 
+#define DELAY 400
+
 unsigned char bit = 0;
 short data = 0;
+unsigned char prevData = -1;
+int startTime;
 
 
 void IR_Init(void){
@@ -26,7 +30,6 @@ void TIMER2_IRQHandler(void){
 	int time = timer_GetCR(IR_TIMER, IR_CAPTURE);
 	PIN_SEL0 &= ~(0x3 << 8); 	//set pin as GPIO
 
-	if(bit <= SIRC_LENGTH){
 		if(time < MAX_TIME_BIT0 && time > MIN_TIME_BIT0){
 			bit++;
 		}else if(time < MAX_TIME_BIT1 && time > MIN_TIME_BIT1){
@@ -35,12 +38,19 @@ void TIMER2_IRQHandler(void){
 		}else if(time < MAX_TIME_STARTBIT && time > MIN_TIME_STARTBIT){
 			bit = 0;
 			data = 0;
-		}else{
-
 		}
-	}
+
 	if(bit == SIRC_LENGTH){
-		printf("button: %d\n", data & 0x7F);
+		data = data & 0x7F;
+
+		if(data != prevData){
+			startTime = timer_GetCount(MILIS_TIMER);
+			prevData = data;
+			printf("button: %d\n", data & 0x7F);
+		}else if((timer_GetCount(MILIS_TIMER) - startTime) > DELAY){
+			startTime = timer_GetCount(MILIS_TIMER);
+			printf("button: %d\n", data & 0x7F);
+		}
 	}
 }
 

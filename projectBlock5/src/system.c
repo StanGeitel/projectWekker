@@ -1,9 +1,12 @@
 #include "LPC1769.h"
+#include "timer.h"
 
 void system_Init(void){
 	system_SetClock();
 	system_SetPinOut();
 	system_SetIntPriority();
+	timer_Init(MILIS_TIMER,CPU_FREQ/1000 - 1);
+	timer_Enable(MILIS_TIMER);
 }
 
 void system_Reset(void){
