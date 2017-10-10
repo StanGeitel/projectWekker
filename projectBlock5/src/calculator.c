@@ -1,10 +1,8 @@
 
 #include "calculator.h"
-#include <math.h>
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
-
 #include <stdio.h>
 
 void calculator_Init(void) {
@@ -19,38 +17,29 @@ void gen_Problem(void) {
 	switch (operator) {
 	case 0: {c = a + b; set_Problem(a, b, c, '+');}
 			break;
-	case 1: {c = a - b; subtract(a, b, c, '-');}
+	case 1: subtract(a, b);
 			break;
 	case 2: {c = a * b; set_Problem(a, b, c, '*');}
 			break;
-	case 3: {divide();}
+	case 3: divide();
 			break;
 	}
 }
 
-void subtract(int a, int b, int c, char operator){
+void subtract(int a, int b){
 	while(a < b){
 		a = get_Random(99);
 		b = get_Random(99);
 	}
-	int d = a - b;
-	set_Problem(a, b, d, operator);
+	int c = a - b;
+	set_Problem(a, b, c, '-');
 }
 
 void divide(void){
-	int d = get_Random(9);
-	int e = get_Random(9);
-	int f = d * e;
-	char operator = '/';
-	while(f - (int)f != 0){
-		d = get_Random(99);
-		e = get_Random(99);
-		while(e == 0){
-			e = get_Random(99);
-		}
-		f = d / e;
-	}
-	set_Problem(d, e, f, operator);
+	int b = 1 + get_Random(8);
+	int c = get_Random(9);
+	int a = b * c;
+	set_Problem(a, b, c, '/');
 }
 
 void set_Problem(int a, int b, int c,  char operator){
@@ -82,11 +71,10 @@ void set_Problem(int a, int b, int c,  char operator){
 		if(((c % 1000)% 100)/ 10){
 			answer[3] = (char)((((c % 1000)% 100)/ 10) + '0');
 		}
-		else if(c / 100) answer[1] = '0';
+		else if(c / 100) answer[3] = '0';
 		if(((c % 1000)% 100)% 10){
 			answer[4] = (char)((((c % 1000)% 100)% 10) + '0');
 		}
-		else if(c / 10) answer[1] = '0';
 	strcpy(problem.answer, answer);
 }
 
