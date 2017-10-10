@@ -24,14 +24,12 @@
 #include "alarm.h"
 
 int main(void) {
-	system_Init();
-	display_Init();
+
 	alarm_Init();
 //	sound_Init();
 //	sound_Select(&wakeUp, 1);
 //	sound_Play();
 //	RTC_Init(0, 30, 10);
-	alarm_TurnOn();
 //	alarm_SetButton(4);
 //	alarm_SetButton(10);
 //	alarm_SetButton(11);

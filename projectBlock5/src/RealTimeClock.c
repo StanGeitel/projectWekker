@@ -2,10 +2,11 @@
 #include "RealTimeClock.h"
 #include "LPC1769.h"
 #include "timer.h"
+#include "alarm.h"
 #include "display.h"
-#include <stdio.h>
+#include <string.h>
 
-char RTC_time[5] =  {'0','0',':','0','0'};
+
 
 void RTC_Init(char seconde, char minute, char hour)
 {
@@ -28,16 +29,6 @@ void RTC_Init(char seconde, char minute, char hour)
 
 	timer_Enable(TIMER3);
 
-	printf("a \n");
-}
-
-void TIMER3_IRQHandler(void)
-{
-	//timer_ClearIR(RTC_TIMER);
-	timer_ClearIR(TIMER3);
-	printf("it works \n");
-	printf("min: %d, uur: %d \n", RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Minuten_Register)), RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Hours_Register)));
-	RTC_setTime(RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Minuten_Register)), RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Hours_Register)));
 }
 
 void RTC_SetSQWOutput(int Hz)
@@ -62,12 +53,12 @@ void RTC_SetSQWOutput(int Hz)
 			I2C_WriteData(RTC_SlaveAddress, RTC_Control_Register, 0x80);
 			break;
 		default:
-			printf("RTC_SetSQWOutput(int Hz) fault! \n");
+//			printf("RTC_SetSQWOutput(int Hz) fault! \n");
 			break;
 	}
 }
 
-void RTC_WriteData(unsigned char slaveAddress, unsigned char dataRegister, unsigned char data)
+void RTC_WriteData(unsigned char slaveAddress, unsigned char dataRegister, char data)
 {
 	I2C_WriteData(slaveAddress, dataRegister, data);
 }
@@ -87,16 +78,12 @@ char RTC_bcdToDec(char val)
     return (((val >> 4) * 10) + (val & 0x0F));
 }
 
-void RTC_setTime(int min, int hour){
-    RTC_time[0] = (char)(min/10) + '0';
-    RTC_time[1] = (char)(min%10) + '0';
-    RTC_time[2] = ':';
-    RTC_time[3] = (char)(hour/10) + '0';
-    RTC_time[4] = (char)(hour%10) + '0';
-    display_Set("Hello");
-    display_Write();
+void TIMER3_IRQHandler(void){
+	//timer_ClearIR(RTC_TIMER);
+	timer_ClearIR(TIMER3);
+	RTC_setTime(RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Minuten_Register)), RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Hours_Register)));
 }
 
-char* RTC_getTime(){
-	return RTC_time;
-}
+
+
+
