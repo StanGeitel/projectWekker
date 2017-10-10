@@ -7,12 +7,12 @@
 #include "display.h"
 #include "calculator.h"
 #include "RealTimeClock.h"
-#include "soundFiles.h"
+//#include "soundFiles.h"
 #include "sound.h"
 
 Problem problem;
 
-char alarmTime[5] = {'0','0',':','0','0'};
+char alarmTime[5] = {'1','0',':','2','6'};
 char userAnswer[5] = {' ',' ',' ',' ',' '};
 unsigned char volume = 1, posAlarmTime = 0, posUserAnswer = 4;
 bool settingAlarmTime = false, alarmOn = false, alarmActive = false;
@@ -21,7 +21,7 @@ void alarm_Init(void){
 	system_Init();
 	display_Init();
 	alarm_Init();
-	sound_Init();
+	//sound_Init();
 	calculator_Init();
 	RTC_Init(0, 30, 10);
 	RTC_setAlarmTime();
@@ -29,8 +29,8 @@ void alarm_Init(void){
 
 void alarm_TurnOn(void){
 	alarmOn = true;
-	sound_Select(&sineWave, 1);
-	sound_Play();
+	//sound_Select(&sineWave, 1);
+	//sound_Play();
 	gen_Problem();
 	display_Set(problem.arr);
 	display_Write();
@@ -98,7 +98,7 @@ void alarm_SetUserAnswer(char button){
 void alarm_CheckUserAnswer(void){
 	if(strcmp(userAnswer, problem.answer) == 0){
 		alarm_TurnOff();
-		display_Set(RTC_time);
+		display_Set(RTC_getTime());
 		display_Write();
 	}
 	else{
@@ -141,7 +141,7 @@ void alarm_SetButton(char button){
 			switch(button){
 			case setAlarm:
 			case buttonOk:
-			{settingAlarmTime = false; posAlarmTime = 0; display_Set(RTC_time); display_Write(); RTC_setAlarmTime();}
+			{settingAlarmTime = false; posAlarmTime = 0; display_Set(RTC_getTime()); display_Write(); RTC_setAlarmTime();}
 				break;
 			case buttonLeft:		alarm_MoveLeft();
 				break;
@@ -185,14 +185,17 @@ void RTC_setTime(int min, int hour){
 
 void RTC_setAlarmTime(void){
 	for(int i = 0; i < 5; i++){
-		RTC_WriteData(RTC_SlaveAddress, (RTC_Status_Register + i), alarmTime[i]);
+		char dataRegister = RTC_Status_Register + i;
+		RTC_WriteData(RTC_SlaveAddress, dataRegister, alarmTime[i]);
 	}
 }
 
 void RTC_getAlarmTime(void){
 	for(int i = 0; i < 5; i++){
-		alarmTime[i] = RTC_ReadData(RTC_SlaveAddress, (RTC_Status_Register + i));
+		char dataRegister = RTC_Status_Register + i;
+		alarmTime[i] = RTC_ReadData(RTC_SlaveAddress, dataRegister);
 	}
+	printf("don \n");
 }
 
 //void alarm_WriteDisplay(bool setting){

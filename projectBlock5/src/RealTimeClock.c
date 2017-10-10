@@ -10,7 +10,7 @@
 
 void RTC_Init(char seconde, char minute, char hour)
 {
-	I2C_Init();
+	//I2C_Init();
 	char sec = RTC_decToBcd(seconde);
 	char min = RTC_decToBcd(minute);
 	char uur = RTC_decToBcd(hour);
@@ -19,6 +19,9 @@ void RTC_Init(char seconde, char minute, char hour)
 	I2C_WriteData(RTC_SlaveAddress, RTC_Minuten_Register, min); //min is hex 0x11
 	I2C_WriteData(RTC_SlaveAddress, RTC_Hours_Register, uur);
 	RTC_SetSQWOutput(0);
+
+	PIN_SEL1 |= 1 << 16;
+	PIN_SEL1 |= 1 << 17;
 
 	timer_Init(TIMER3,0);
 	timer_Disable(TIMER3);
@@ -53,7 +56,7 @@ void RTC_SetSQWOutput(int Hz)
 			I2C_WriteData(RTC_SlaveAddress, RTC_Control_Register, 0x80);
 			break;
 		default:
-//			printf("RTC_SetSQWOutput(int Hz) fault! \n");
+			printf("RTC_SetSQWOutput(int Hz) fault! \n");
 			break;
 	}
 }
@@ -81,7 +84,8 @@ char RTC_bcdToDec(char val)
 void TIMER3_IRQHandler(void){
 	//timer_ClearIR(RTC_TIMER);
 	timer_ClearIR(TIMER3);
-	RTC_setTime(RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Minuten_Register)), RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Hours_Register)));
+	printf("a \n");
+	//RTC_setTime(RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Minuten_Register)), RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Hours_Register)));
 }
 
 
