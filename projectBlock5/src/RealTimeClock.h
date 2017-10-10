@@ -10,20 +10,20 @@
 #define RTC_Month_Register   	0x05
 #define RTC_Year_Register   	0x06
 #define RTC_Control_Register   	0x07
+#define RTC_Status_Register		0x08
 #define RTC_SlaveAddress		0xD0
+
 
 #define RTC_TIMER TIMER3
 
 #define TIMER TIMER0
 
 void RTC_Init(char seconde, char minute, char hour);
-void RTC_WriteData(unsigned char slaveAddress, unsigned char dataRegister, unsigned char data);
+void RTC_WriteData(unsigned char slaveAddress, unsigned char dataRegister, char data);
 unsigned char RTC_ReadData(unsigned char slaveAddress, unsigned char dataRegister);
 void RTC_SetSQWOutput(int Hz);
 char RTC_bcdToDec(char val);
 char RTC_decToBcd(char val);
-void RTC_setTime(int min, int hour);
-char* RTC_getTime();
 
 
 #endif

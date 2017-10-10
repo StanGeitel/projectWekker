@@ -34,10 +34,12 @@ void alarm_VolumeUp(void);
 void alarm_MoveLeft(void);
 void alarm_MoveRight(void);
 void alarm_SetAlarmTime(char number);
-char* alarm_GetAlarmTime(void);
 void alarm_ToggleActive(void);
 void alarm_SetUserAnswer(char button);
 void alarm_CheckUserAnswer(void);
 void alarm_SetButton(char button);
+void RTC_setTime(int min, int hour);
+void RTC_setAlarmTime(void);
+void RTC_getAlarmTime(void);
 
 #endif /* ALARM_H_ */
