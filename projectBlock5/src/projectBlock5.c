@@ -15,6 +15,7 @@
 #include "LPC1769.h"
 #include "display.h"
 #include "sound.h"
+#include "soundFiles.h"
 #include "IR.h"
 #include <cr_section_macros.h>
 #include "LPC1769.h"
@@ -26,6 +27,10 @@ int main(void) {
 	system_Init();
 	display_Init();
 	alarm_Init();
+//	sound_Init();
+//	sound_Select(&wakeUp, 1);
+//	sound_Play();
+//	RTC_Init(0, 30, 10);
 	alarm_TurnOn();
 //	alarm_SetButton(4);
 //	alarm_SetButton(10);
@@ -38,7 +43,7 @@ int main(void) {
 //	alarm_SetButton(11);
 //	alarm_SetButton(3);
 //	alarm_SetButton(12);
-//	alarm_SetButton();
+//	alarm_SetButton(9);
 
 //	alarm_TurnOn();
 //	alarm_VolumeUp();

@@ -9,7 +9,7 @@ char RTC_time[5] =  {'0','0',':','0','0'};
 
 void RTC_Init(char seconde, char minute, char hour)
 {
-	//I2C_Init();
+	I2C_Init();
 	char sec = RTC_decToBcd(seconde);
 	char min = RTC_decToBcd(minute);
 	char uur = RTC_decToBcd(hour);

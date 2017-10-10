@@ -23,6 +23,7 @@ void sound_Init(void){
 
 void sound_Select(audioFile *newFile, short speed){
 	file = newFile;
+	dataOffset = 0;
 	timer_SetPR(SAMPLE_TIMER, CPU_FREQ/ file->sampleRate/speed );
 }
 

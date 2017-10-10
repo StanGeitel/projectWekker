@@ -7,6 +7,8 @@
 #include "display.h"
 #include "calculator.h"
 #include "RealTimeClock.h"
+#include "soundFiles.h"
+#include "sound.h"
 
 Problem problem;
 
@@ -23,6 +25,8 @@ void alarm_Init(void){
 
 void alarm_TurnOn(void){
 	alarmOn = true;
+	sound_Select(&wakeUp, 1);
+	sound_Play();
 	gen_Problem();
 	display_Set(problem.arr);
 	display_Write();
@@ -31,6 +35,7 @@ void alarm_TurnOn(void){
 
 void alarm_TurnOff(void){
 	alarmOn = false;
+	sound_Pauze();
 	volume = 1;
 	GPIO_Set(2, (0x07 << 2));
 }
@@ -97,7 +102,7 @@ void alarm_CheckUserAnswer(void){
 		display_Write();
 	}
 	else{
-		display_Set("Porno");
+		display_Set("XXXXX");
 		display_Write();
 		for(int i =0; i < 5000; i++){
 			asm("nop");
