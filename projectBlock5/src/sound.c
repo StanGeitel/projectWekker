@@ -3,7 +3,7 @@
 #include "GPIO.h"
 #include "sound.h"
 
-float volumE = 1.0;
+float volume = 0.5;
 int dataOffset;
 audioFile *file;
 
@@ -64,18 +64,18 @@ void sound_DecreaseVolume(void){
 void TIMER0_IRQHandler(void){
  	timer_ClearIR(SAMPLE_TIMER);
 
- 	float data =  file->data[dataOffset];
+ 	float data = file->data[dataOffset];
  	data -= 127;
- 	data *= volumE;	//increase amplitude
+ 	data *= volume;	//increase amplitude
  	data += 127;
 
  	//dial back the volumE if data starts clipping
  	if(data < 0){
- 		volumE -= (0 - data) / 127.0;
+ 		volume -= (0 - data) / 127.0;
  	}else if(data > PWM_RESOLUTION){
- 		volumE -= (data - PWM_RESOLUTION) / 127.0;
+ 		volume -= (data - PWM_RESOLUTION) / 127.0;
  	}
 
-	timer_PWM_SetMR(PWM_CHANNEL,(int) (data + 0.5));
+	timer_PWM_SetMR(PWM_CHANNEL, file->data[dataOffset]);
  	dataOffset == file->size - 1 ? dataOffset = 0 : dataOffset++;
 }
