@@ -46,10 +46,10 @@ void TIMER2_IRQHandler(void){
 		if(data != prevData){
 			startTime = timer_GetCount(MILIS_TIMER);
 			prevData = data;
-			printf("button: %d\n", data & 0x7F);
+
 		}else if((timer_GetCount(MILIS_TIMER) - startTime) > DELAY){
 			startTime = timer_GetCount(MILIS_TIMER);
-			printf("button: %d\n", data & 0x7F);
+
 		}
 	}
 }

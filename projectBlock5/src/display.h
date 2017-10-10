@@ -9,7 +9,7 @@
 #define H_RST(x)	{x ? GPIO_Set(PORT0,1 << 17) : GPIO_Clear(PORT0,1 << 17);}
 #define V_CLK(x)	{x ? GPIO_Set(PORT0,1 << 1) : GPIO_Clear(PORT0,1 << 1);}
 #define V_RST(x)	{x ? GPIO_Set(PORT0,1 << 0) : GPIO_Clear(PORT0,1 << 0);}
-#define PRESCALER	6666
+#define REFRESH_RATE 60
 
 void display_Init(void);
 void display_Set(char message[5]);

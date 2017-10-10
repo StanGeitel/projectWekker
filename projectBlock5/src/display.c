@@ -10,8 +10,6 @@
 volatile bool displayUpdate = false;
 unsigned char row = 0;
 
-int arr[7];
-
 int *frontBuffer;
 int *backBuffer;
 
@@ -20,6 +18,7 @@ void display_Init(void){
 
 	GPIO_SetDIR(DISPLAY_IOPORT,0x30003);
 	GPIO_Clear(DISPLAY_IOPORT, H_STO);								//set H_STO LOW(this has no effect until STO is set to GPIO
+
 	H_RST(LOW);														//reset the shift registers
 	V_RST(HIGH);													//reset the row counter
 	H_RST(HIGH);
@@ -28,7 +27,8 @@ void display_Init(void){
 	frontBuffer = malloc(7 * sizeof(int));							//allocate memory for the frontBuffer
 	backBuffer = malloc(7 * sizeof(int));							//allocate memory for the backbuffer
 	memset(frontBuffer,0,7*sizeof(int));							//set whole frontBuffer low
-	memset(backBuffer,0,7*sizeof(int));								//set whole backBuffer low
+	memset(backBuffer,0,7*sizeof(int));	//set whole backBuffer low
+
 	RIT_Init(200000);
 	RIT_Enable();
 }
@@ -67,7 +67,7 @@ void RIT_IRQHandler(void){
 		V_RST(HIGH);
 		asm("nop");//reset the row counter
 		V_RST(LOW);
-		RIT_SetCOMP(200000 * 2);
+		RIT_SetCOMP(200000 * 3);
 		if(displayUpdate){												//if new data is ready
 			int *temp = frontBuffer;										//Temporally store the base address of the current frontBuffer
 			frontBuffer = backBuffer;									//set the base address of the backBuffer with all its new data in frontBuffer

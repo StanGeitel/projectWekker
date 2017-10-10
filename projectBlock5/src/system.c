@@ -5,6 +5,7 @@ void system_Init(void){
 	system_SetClock();
 	system_SetPinOut();
 	system_SetIntPriority();
+
 	timer_Init(MILIS_TIMER,CPU_FREQ/1000 - 1);
 	timer_Enable(MILIS_TIMER);
 }
@@ -49,7 +50,7 @@ void system_SetClock(void){
 }
 
 void system_SetPinOut(void){
-	PIN_SEL0 = 1 << 31;	//P0.15 -> SCK;
+	PIN_SEL0 = 1 << 31;		//P0.15 -> SCK;
 	PIN_SEL1 = 1 << 5;		//P0.18 -> MOSI0
 	PIN_SEL1 |= 3 << 16;	//P0.24 -> CAP3.1
 	PIN_SEL1 |= 1 << 22;	//P0.27 -> SDA0
@@ -59,10 +60,9 @@ void system_SetPinOut(void){
 
 void system_SetIntPriority(void){
 	IPR5 = 1 << 11;		//EINT3 = 1	(ir-faling)
-	IPR0 = 2 << 11;		//TIMER0 = 2(ir-rising)
-	IPR0 |= 3 << 27;	//TIMER2 = 3(sound)
-	IPR7 = 4 << 11;		//RIT = 4	(display)
-	IPR1 = 5 << 3;		//TIMER3 = 5(RTC)
-
-	IPR0 |= 9 << 19;	//TIMER1 = 9
+	IPR0 = 4 << 27;		//TIMER2 = 4(sound)
+	IPR0 |= 6 << 11;	//TIMER0 = 6(ir-rising)
+	IPR7 = 8 << 11;		//RIT = 8	(display)
+	IPR1 = 10 << 3;		//TIMER3 = 10(RTC)
+	IPR0 |= 12 << 19;	//TIMER1 = 12
 }
