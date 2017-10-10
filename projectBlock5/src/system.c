@@ -3,10 +3,11 @@
 void system_Init(void){
 	system_SetClock();
 	system_SetPinOut();
+	system_SetIntPriority();
 }
 
 void system_Reset(void){
-	AIRCR = 0x5FA << 16 | 1 << 2;	//feed
+	AIRCR = 0x5FA << 16 | 1 << 2;
 }
 
 void system_SetClock(void){
@@ -45,9 +46,19 @@ void system_SetClock(void){
 }
 
 void system_SetPinOut(void){
-	PIN_SEL0 |= 0x300;
-	PIN_SEL0 |= 1 << 31;
-	PIN_SEL1 |= 1 << 5;
-	PIN_SEL3 |= 1 << 22;
-	PIN_SEL4 |= 1;
+	PIN_SEL0 |= 1 << 31;	//P0.15 -> SCK;
+	PIN_SEL1 |= 1 << 5;		//P0.18 -> MOSI0
+	PIN_SEL1 |= 3 << 16;	//P0.24 -> CAP3.1
+	PIN_SEL1 |= 1 << 22;	//P0.27 -> SDA0
+	PIN_SEL1 |= 1 << 24;	//P0.28 -> SCL0
+	PIN_SEL4 |= 1 << 2;		//P2.1 -> PWM1.2
+}
+
+void system_SetIntPriority(void){
+	IPR5 |= 1 << 11;	//EINT3 = 1
+	IPR0 |= 2 << 11;	//TIMER0 = 2
+	IPR0 |= 3 << 27;	//TIMER2 = 3
+	IPR7 |= 4 << 11;	//RIT = 4
+	IPR1 |= 5 << 3;		//TIMER3 = 5
+	IPR0 |= 9 << 19;	//TIMER1 = 9
 }

@@ -3,6 +3,7 @@
 #define LPC1769_H_
 
 #define CPU_FREQ	120000000
+
 #define PLL			0x400fc080
 #define PLL_CON		(*(unsigned int *)	(PLL))
 #define PLL_CFG		(*(unsigned int *)	(PLL + 0x4))
@@ -12,15 +13,24 @@
 #define CLKSRCSEL	(*(unsigned int *)	(0x400FC10C))
 #define CLKOUTCFG	(*(unsigned int *)	(0x400FC108))
 #define SCS			(*(unsigned int *)	(0x400FC1A0))
-
-#define AIRCR		(*(unsigned int *)	(0xE000ED0C))
-
 #define PCONP		(*(unsigned int *)	(0x400FC0C4))
 #define PCLKSEL0	(*(unsigned int *)	(0x400FC1A8))
 #define PCLKSEL1	(*(unsigned int *)	(0x400FC1AC))
+
+#define AIRCR		(*(unsigned int *)	(0xE000ED0C))
+
 #define ISER0		(*(unsigned int *)	(0xE000E100))
 #define ISER1		(*(unsigned int *)	(0xE000E104))
 #define ICPR0  		(*(unsigned int *) 	(0xE000E280))
+#define	IPR0		(*(unsigned int *) 	(0xE000E400))
+#define	IPR1		(*(unsigned int *) 	(0xE000E404))
+#define	IPR2		(*(unsigned int *) 	(0xE000E408))
+#define	IPR3		(*(unsigned int *) 	(0xE000E40C))
+#define	IPR4		(*(unsigned int *) 	(0xE000E410))
+#define	IPR5		(*(unsigned int *) 	(0xE000E414))
+#define	IPR6		(*(unsigned int *) 	(0xE000E418))
+#define	IPR7		(*(unsigned int *) 	(0xE000E41C))
+#define	IPR8		(*(unsigned int *) 	(0xE000E420))
 
 #define PIN_SEL0	(*(unsigned int *)	(0x4002C000))
 #define PIN_SEL1	(*(unsigned int *)	(0x4002C004))
@@ -112,12 +122,11 @@
 
 
 
-
-
 void system_Init(void);
 void system_Reset(void);
 void system_SetClock(void);
 void system_SetPinOut(void);
+void system_SetIntPriority(void);
 
 #endif
 

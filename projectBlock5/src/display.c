@@ -17,7 +17,7 @@ int *backBuffer;
 
 void display_Init(void){
 	SPI_Init();
-	PIN_SEL0 &= ~0xF;
+
 	GPIO_SetDIR(DISPLAY_IOPORT,0x30003);
 	GPIO_Clear(DISPLAY_IOPORT, H_STO);								//set H_STO LOW(this has no effect until STO is set to GPIO
 	H_RST(LOW);														//reset the shift registers
@@ -29,8 +29,7 @@ void display_Init(void){
 	backBuffer = malloc(7 * sizeof(int));							//allocate memory for the backbuffer
 	memset(frontBuffer,0,7*sizeof(int));							//set whole frontBuffer low
 	memset(backBuffer,0,7*sizeof(int));								//set whole backBuffer low
-	RIT_Init();
-	RIT_SetCOMP(200000);
+	RIT_Init(200000);
 	RIT_Enable();
 }
 
