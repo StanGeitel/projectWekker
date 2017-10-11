@@ -10,8 +10,12 @@
 #define V_CLK(x)	{x ? GPIO_Set(PORT0,1 << 1) : GPIO_Clear(PORT0,1 << 1);}
 #define V_RST(x)	{x ? GPIO_Set(PORT0,1 << 0) : GPIO_Clear(PORT0,1 << 0);}
 #define REFRESH_RATE 60
+#define DELAY	800
 
 void display_Init(void);
+void display_SetCursor(unsigned char pos);
+void display_EnableCursor(void);
+void display_DisableCursor(void);
 void display_Set(char message[5]);
 void display_SetChar(char c, unsigned char pos);
 void display_Write(void);

@@ -10,25 +10,41 @@
 #include "soundFiles.h"
 #include "sound.h"
 #include "IR.h"
+#include "timer.h"
+
+#define ALARM_IOPORT	2
+#define LED_PIN			5
+
+time timeBuffer;
+time alarmBuffer;
 
 Problem problem;
+
 char userAnswer[5] = {'=',' ',' ',' ',' '};
-char alarmTime[5] = {'1','6',':','3','7'};
-unsigned char amplifier = 1, posAlarmTime = 0, posUserAnswer = 4;
-bool settingAlarmTime = false, alarmOn = false, alarmActive = false;
+unsigned char amplifier = 1;
+unsigned char displayPos = 0;
+
+bool editAlarm = false;
+bool editTime = false;
+bool alarmEnabled = false;
+bool alarmOn = false;
 
 void alarm_Init(void){
-	system_Init();
 	display_Init();
 	sound_Init();
 	calculator_Init();
-	RTC_Init(0, 45, 20);
+	RTC_Init();
 	IR_Init();
+
+	GPIO_SetDIR(ALARM_IOPORT, 1 << LED_PIN);
+	sound_Select(&totalySpies, 1, FALSE);
+	sound_Play();
 }
 
 void alarm_TurnOn(void){
 	alarmOn = true;
-	sound_Select(&sineWave, 1);
+	displayPos = 0;
+	sound_Select(&airRaid, 2, TRUE);
 	sound_Play();
 	gen_Problem();
 	display_Set(problem.arr);
@@ -37,152 +53,170 @@ void alarm_TurnOn(void){
 
 void alarm_TurnOff(void){
 	alarmOn = false;
-	sound_Pauze();
+	sound_Stop();
+	sound_Select(&powerOff,1,FALSE);
+	sound_Play();
 }
 
 void alarm_MoveLeft(void){
-	if(alarmOn){
-		posUserAnswer == 1 ? posUserAnswer == 1 : posUserAnswer--;
+	displayPos == 4 ? displayPos = 0 : displayPos++;
+	if((editTime || editAlarm) && displayPos == 2){
+		alarm_MoveLeft();
+	}else if(alarmOn == 4){
+		displayPos = 0;
 	}
-	if(settingAlarmTime){
-		posAlarmTime == 0 ? posAlarmTime == 0 : posAlarmTime--;
-	}
+	display_SetCursor(displayPos);
 }
 
 void alarm_MoveRight(void){
-	if(alarmOn){
-		posUserAnswer == 4 ? posUserAnswer == 4 : posUserAnswer++;
+	displayPos == 0 ? displayPos = 4 : displayPos--;
+	if((editTime || editAlarm) && displayPos == 2){
+		alarm_MoveRight();
+	}else if(alarmOn == 4){
+		displayPos = 3;
 	}
-	if(settingAlarmTime){
-		posAlarmTime == 3 ? posAlarmTime == 3 : posAlarmTime++;
-	}
+	display_SetCursor(displayPos);
 }
 
-void alarm_SetAlarmTime(char number){
-	if(posAlarmTime > 1){
-		alarmTime[posAlarmTime + 1] = number;
-	}
-	else if(posAlarmTime <= 1){
-		alarmTime[posAlarmTime] = number;
-	}
-	display_Set(alarmTime);
-	display_Write();
-}
+void alarm_SetTime(time *time, unsigned char button){
+	button == 9 ? button = 0 : button++;
 
-void alarm_ToggleActive(void){
-	alarmActive = ~alarmActive;
+	switch(displayPos){
+	case 0:
+		time->minutes &= ~0xF;
+		time->minutes |= button;
+		break;
+	case 1:
+		time->minutes &= ~(0xF << 4);
+		time->minutes |= button << 4;
+		break;
+	case 3:
+		time->hours &= ~0xF;
+		time->hours |= button;
+		break;
+	case 4:
+		time->hours &= ~(0xF << 4);
+		time->hours |= button << 4;
+		break;
+	}
+	if(RTC_bcdToDec(time->minutes) > 60){
+		time->minutes = 5 << 4 | 9;
+	}
+	if(RTC_bcdToDec(time->hours) > 24){
+		time->hours = 2 << 4 | 3;
+	}
+
+	alarm_print(time->minutes,time->hours);
+	alarm_MoveLeft();
 }
 
 void alarm_SetUserAnswer(char button){
-	userAnswer[posUserAnswer] = button;
-	display_Set(userAnswer);
-	display_Write();
+
 }
 
 void alarm_CheckUserAnswer(void){
-	if(strcmp(userAnswer, problem.answer) == 0){
-		alarm_TurnOff();
-		alarm_setTime(RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Minuten_Register)), RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Hours_Register)));
-	}
-	else{
-		display_Set("XXXXX");
-		display_Write();
-		for(int i =0; i < 5000; i++){
-			asm("nop");
+
+}
+
+void alarm_print(unsigned char min, unsigned char hour){
+	char c[] = {
+			((hour >> 4) & 0xF) + '0',
+			(hour & 0xF) + '0',
+			':',
+			((min >> 4) & 0xF) + '0',
+			(min & 0xF) + '0',
+	};
+	display_Set(c);
+	display_Write();
+}
+
+void TIMER3_IRQHandler(void){
+	timer_ClearIR(TIMER3);
+
+	if(!alarmOn && !editAlarm && !editTime){
+		timeBuffer.minutes = RTC_ReadData(RTC_Minuten_Register);
+		timeBuffer.hours = RTC_ReadData(RTC_Hours_Register);
+		alarmBuffer.minutes = RTC_ReadData(Alarm_Minuts_Register);
+		alarmBuffer.hours = RTC_ReadData(Alarm_Hours_Register);
+		if(timeBuffer.minutes == alarmBuffer.minutes && timeBuffer.hours == alarmBuffer.hours && alarmEnabled){
+			alarm_TurnOn();
+		}else{
+			alarm_print(timeBuffer.minutes,timeBuffer.hours);
 		}
-		display_Set(problem.arr);
-		display_Write();
-		sound_SetAmplefier(amplifier++);
-	}
-	posUserAnswer = 4;
-	for(int i = 0; i < 5; i++){
-		userAnswer[i] = ' ';
 	}
 }
 
-void alarm_SetButton(char button){
-	if(alarmOn){
-		if(button <= 9){
-			alarm_SetUserAnswer(button + 49);
-		}
-		else{
+void alarm_SetButton(unsigned char button){
+	switch(button){
+	case BUTTON_UP:
+		alarm_MoveLeft();
+		break;
+	case BUTTON_DOWN:
+		alarm_MoveRight();
+		break;
+	case BUTTON_VOLUMEDOWN:
+		sound_DecreaseVolume();
+		break;
+	case BUTTON_VOLUMEUP:
+		sound_IncreaseVolume();
+		break;
+	default:
+
+		if(alarmOn){
+			if(button <= 9){
+				alarm_SetUserAnswer(button);
+			}else if(button == BUTTON_PLAY){
+				alarm_CheckUserAnswer();
+			}
+		}else if(editTime){
+			if(button <= 9){
+				alarm_SetTime(&timeBuffer, button);
+			}else if(button == BUTTON_PLAY){
+				RTC_WriteData(RTC_Minuten_Register,timeBuffer.minutes);
+				RTC_WriteData(RTC_Hours_Register,timeBuffer.hours);
+				display_DisableCursor();
+				editTime = false;
+			}
+		}else if(editAlarm){
+			if(button <= 9){
+				alarm_SetTime(&alarmBuffer, button);
+			}else if(button == BUTTON_PLAY){
+				RTC_WriteData(Alarm_Minuts_Register,alarmBuffer.minutes);
+				RTC_WriteData(Alarm_Hours_Register,alarmBuffer.hours);
+				timeBuffer.minutes = RTC_ReadData(RTC_Minuten_Register);
+				timeBuffer.hours = RTC_ReadData(RTC_Hours_Register);
+
+				alarm_print(timeBuffer.minutes,timeBuffer.hours);
+				display_DisableCursor();
+				editAlarm = false;
+			}
+		}else{
 			switch(button){
-			case buttonOk:			alarm_CheckUserAnswer();
+			case BUTTON_PAUZE:
+				editTime = true;
+				timeBuffer.minutes = RTC_ReadData(RTC_Minuten_Register);
+				timeBuffer.hours = RTC_ReadData(RTC_Hours_Register);
+				displayPos = 0;
+				display_SetCursor(displayPos);
+				display_EnableCursor();
 				break;
-			case buttonUp:			alarm_MoveLeft();
+			case BUTTON_STOP:
+				editAlarm = true;
+				alarmBuffer.minutes = RTC_ReadData(Alarm_Minuts_Register);
+				alarmBuffer.hours = RTC_ReadData(Alarm_Hours_Register);
+				alarm_print(alarmBuffer.minutes,alarmBuffer.hours);
+				displayPos = 0;
+				display_SetCursor(displayPos);
+				display_EnableCursor();
 				break;
-			case buttonDown:		alarm_MoveRight();
+			case BUTTON_MUTE:
+				alarmEnabled = !alarmEnabled;
 				break;
 			}
 		}
+		break;
 	}
-	else if(settingAlarmTime){
-		if(button <= 9){
-			alarm_SetAlarmTime(button + 1);
-		}
-		else{
-			switch(button){
-			case setAlarm:
-			case buttonOk:
-			{settingAlarmTime = false; posAlarmTime = 0; alarm_setTime(RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Minuten_Register)), RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Hours_Register)));}
-				break;
-			case buttonUp:		alarm_MoveLeft();
-				break;
-			case buttonDown:	alarm_MoveRight();
-				break;
-			}
-		}
-	}
-	else{
-		switch(button){
-		case setAlarm:
-		{settingAlarmTime = true; display_Set(alarmTime); display_Write();}
-			break;
-		case buttonVolumeDown:		sound_SetAmplefier(amplifier--);
-			break;
-		case buttonVolumeUp:		sound_SetAmplefier(amplifier++);
-			break;
-		case setActive:				alarm_ToggleActive();
-			break;
-		}
-	}
+	(alarmEnabled && !editTime && !editAlarm) ? GPIO_Set(ALARM_IOPORT, 1 << LED_PIN) : GPIO_Clear(ALARM_IOPORT, 1 << LED_PIN);
 }
 
-void alarm_setTime(int min, int hour){
-	char RTC_time[5] =  {'0','0',':','0','0'};
-    RTC_time[0] = (char)(hour/10) + '0';
-    RTC_time[1] = (char)(hour%10) + '0';
-    RTC_time[2] = ':';
-    RTC_time[3] = (char)(min/10) + '0';
-    RTC_time[4] = (char)(min%10) + '0';
-
-   	display_Set(RTC_time);
-   	display_Write();
-
-	int check = 1;
-	for(int i = 0 ; i < 5 ; i++){
-		if(!(alarmTime[i] == RTC_time[i])){
-			check = 0;
-		}
-	}
-	if(check == 1){
-		printf("Alarm aan \n");
-		alarm_TurnOn();
-	}
-}
-
-void alarm_setAlarmTime(void){
-	for(int i = 0; i < 5; i++){
-		char dataRegister = RTC_Status_Register + i;
-		RTC_WriteData(RTC_SlaveAddress, dataRegister, alarmTime[i]);
-	}
-}
-
-void alarm_getAlarmTime(void){
-	for(int i = 0; i < 5; i++){
-		char dataRegister = RTC_Status_Register + i;
-		alarmTime[i] = RTC_ReadData(RTC_SlaveAddress, dataRegister);
-	}
-	printf("don \n");
-}
 

@@ -7,12 +7,12 @@
 #include "display.h"
 #include <stdio.h>
 
-#define DELAY 400
+#define IR_DELAY 400
 
 unsigned char bit = 0;
 short data = 0;
 unsigned char prevData = -1;
-int startTime;
+int irStartTime;
 
 
 void IR_Init(void){
@@ -44,12 +44,12 @@ void TIMER2_IRQHandler(void){
 		data = data & 0x7F;
 
 		if(data != prevData){
-			startTime = timer_GetCount(MILIS_TIMER);
+			irStartTime = timer_GetCount(MILIS_TIMER);
 			prevData = data;
-
-		}else if((timer_GetCount(MILIS_TIMER) - startTime) > DELAY){
-			startTime = timer_GetCount(MILIS_TIMER);
-
+			alarm_SetButton(data);
+		}else if((timer_GetCount(MILIS_TIMER) - irStartTime) > IR_DELAY){
+			irStartTime = timer_GetCount(MILIS_TIMER);
+			alarm_SetButton(data);
 		}
 	}
 }

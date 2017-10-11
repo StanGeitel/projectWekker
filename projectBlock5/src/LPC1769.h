@@ -2,7 +2,7 @@
 #ifndef LPC1769_H_
 #define LPC1769_H_
 
-#define MILIS_TIMER	TIMER1
+#define MILIS_TIMER	1
 #define CPU_FREQ	120000000
 #define TRUE		1
 #define FALSE		0

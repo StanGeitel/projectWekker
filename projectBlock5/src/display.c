@@ -8,7 +8,11 @@
 #include "SPI.h"
 
 volatile bool displayUpdate = false;
+bool cursorEnabled = false;
+unsigned char cursor = -1;
 unsigned char row = 0;
+int startTime = 0;
+int maskedColumns = 0;
 
 int *frontBuffer;
 int *backBuffer;
@@ -31,6 +35,19 @@ void display_Init(void){
 
 	RIT_Init(200000);
 	RIT_Enable();
+}
+
+void display_SetCursor(unsigned char pos){
+	cursor = pos;
+	maskedColumns = 0;
+}
+
+void display_EnableCursor(void){
+	cursorEnabled = true;
+}
+
+void display_DisableCursor(void){
+	cursorEnabled = false;
 }
 
 void display_Set(char *message){										//write char array to backBuffer
@@ -59,15 +76,23 @@ void RIT_IRQHandler(void){
 		RIT_SetCOMP(200000);											//set prescaler back to its original value
 		while(!(GPIO_Read(DISPLAY_IOPORT) & H_STO));					//wait until H_STO is high so you know the row is cleared
 		V_CLK(HIGH);		//up the row counter
-		asm("nop");
 		V_CLK(LOW);
-		SPI_WriteInteger(~frontBuffer[row]);							//write data to the new row
+		SPI_WriteInteger(~frontBuffer[row] | maskedColumns);							//write data to the new row
 		row++;
 	}else if(row == 7){													//if all row's have been written
 		V_RST(HIGH);
-		asm("nop");//reset the row counter
 		V_RST(LOW);
 		RIT_SetCOMP(200000 * 3);
+
+		if(timer_GetCount(MILIS_TIMER) - startTime > DELAY){
+			startTime = timer_GetCount(MILIS_TIMER);
+			if(cursorEnabled){
+				maskedColumns ^= (0x1F << 5 * cursor);
+			}else{
+				maskedColumns = 0;
+			}
+		}
+
 		if(displayUpdate){												//if new data is ready
 			int *temp = frontBuffer;										//Temporally store the base address of the current frontBuffer
 			frontBuffer = backBuffer;									//set the base address of the backBuffer with all its new data in frontBuffer

@@ -1,36 +1,26 @@
-#include "I2C.h"
-#include "RealTimeClock.h"
-#include "LPC1769.h"
 #include "timer.h"
+#include "I2C.h"
+#include "LPC1769.h"
 #include "alarm.h"
-#include "display.h"
+#include "RealTimeClock.h"
 
-void RTC_Init(char seconde, char minute, char hour)
+#define RTC_TIMER 				TIMER3
+
+void RTC_Init(void)
 {
 	I2C_Init();
-	char sec = RTC_decToBcd(seconde);
-	char min = RTC_decToBcd(minute);
-	char uur = RTC_decToBcd(hour);
-
-	I2C_WriteData(RTC_SlaveAddress, RTC_Secondes_Register, sec);
-	I2C_WriteData(RTC_SlaveAddress, RTC_Minuten_Register, min); //min is hex 0x11
-	I2C_WriteData(RTC_SlaveAddress, RTC_Hours_Register, uur);
-
-	RTC_WriteData(RTC_SlaveAddress, Alarm_Minuts_Register, 0x00);
-	RTC_WriteData(RTC_SlaveAddress, Alarm_Hours_Register, 0x00);
-
 	RTC_SetSQWOutput(0);
 
-	timer_Init(TIMER3,0);
-	timer_Disable(TIMER3);
-	timer_ClearIR(TIMER3);
-	timer_SetCTCR(TIMER3,FALING_EDGE,CAP1);
-	timer_SetMR(TIMER3,MR0,10);
-	timer_SetMCR(TIMER3,MR0,0x3);
+	timer_Init(RTC_TIMER,0);
+	timer_ClearIR(RTC_TIMER);
+	timer_SetCTCR(RTC_TIMER,FALING_EDGE,CAP1);
+	timer_SetMR(RTC_TIMER,MR0,20);
+	timer_SetMCR(RTC_TIMER,MR0,0x3);
 
-	timer_Enable(TIMER3);
 
-	alarm_setTime(RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Minuten_Register)), RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Hours_Register)));
+	timer_Enable(RTC_TIMER);
+
+	alarm_print(RTC_ReadData(RTC_Minuten_Register),RTC_ReadData(RTC_Hours_Register));
 }
 
 void RTC_SetSQWOutput(int Hz)
@@ -60,14 +50,14 @@ void RTC_SetSQWOutput(int Hz)
 	}
 }
 
-void RTC_WriteData(unsigned char slaveAddress, unsigned char dataRegister, char data)
+void RTC_WriteData(unsigned char dataRegister, char data)
 {
-	I2C_WriteData(slaveAddress, dataRegister, data);
+	I2C_WriteData(RTC_SlaveAddress, dataRegister, data);
 }
 
-unsigned char RTC_ReadData(unsigned char slaveAddress, unsigned char dataRegister)
+unsigned char RTC_ReadData(unsigned char dataRegister)
 {
-	return I2C_ReadData(slaveAddress, dataRegister);
+	return I2C_ReadData(RTC_SlaveAddress, dataRegister);
 }
 
 char RTC_decToBcd(char val)
@@ -79,65 +69,3 @@ char RTC_bcdToDec(char val)
 {
     return (((val >> 4) * 10) + (val & 0x0F));
 }
-
-void TIMER3_IRQHandler(void){
-	//timer_ClearIR(RTC_TIMER);
-	timer_ClearIR(TIMER3);
-	//RTC_setTime(RTC_getMinuts(), RTC_getHours());
-	alarm_setTime(RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Minuten_Register)), RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Hours_Register)));
-}
-
-
-
-
-void RTC_setTime(unsigned char min, unsigned char hour){
-	RTC_printTime(min, hour);
-
-	if((RTC_getMinuts() == RTC_getAlarmMinuts()) && (RTC_getHours() == RTC_getAlarmHours())){
-		alarm_TurnOn();
-	}
-}
-
-void RTC_SetAlarmTime(char number, int posAlarmTime){
-	switch(posAlarmTime){
-	case 0:		RTC_WriteData(RTC_SlaveAddress, Alarm_Minuts_Register, ((RTC_getAlarmMinuts() & ~0xF) | number));
-		break;
-	case 1:		RTC_WriteData(RTC_SlaveAddress, Alarm_Minuts_Register, ((RTC_getAlarmMinuts() & ~(0xF << 4)) | (number << 4)));
-		break;
-	case 2:		RTC_WriteData(RTC_SlaveAddress, Alarm_Hours_Register, ((RTC_getAlarmHours() & ~0xF) | number));
-		break;
-	case 3:		RTC_WriteData(RTC_SlaveAddress, Alarm_Hours_Register, ((RTC_getAlarmHours()  & ~(0xF << 4)) | (number << 4)));
-		break;
-	}
-	RTC_printTime(RTC_getAlarmMinuts(), RTC_getAlarmHours());
-}
-
-void RTC_printTime(unsigned char min, unsigned char hour){
-	char RTC_time[5];
-    RTC_time[0] = (min & 0xF) + '0' ;
-    RTC_time[1] = ((min >> 4) & 0xF) + '0';
-    RTC_time[2] = ':';
-    RTC_time[3] = (hour & 0xF) + '0';
-    RTC_time[4] = ((hour >> 4) & 0xF) + '0';
-
-    display_Set(RTC_time);
-    display_Write();
-}
-
-unsigned char RTC_getMinuts(void){
-	return I2C_ReadData(RTC_SlaveAddress, RTC_Minuten_Register);
-}
-
-unsigned char RTC_getHours(void){
-	return I2C_ReadData(RTC_SlaveAddress, RTC_Minuten_Register);
-}
-
-unsigned char RTC_getAlarmMinuts(void){
-	return RTC_ReadData(RTC_SlaveAddress, Alarm_Minuts_Register);
-}
-
-unsigned char RTC_getAlarmHours(void){
-	return RTC_ReadData(RTC_SlaveAddress, Alarm_Hours_Register);
-}
-
-

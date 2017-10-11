@@ -8,16 +8,26 @@
 #ifndef ALARM_H_
 #define ALARM_H_
 
-#define button0				10	//10
-#define buttonUp			10	//nee toch niet
-#define buttonDown			11	//ook niet
-#define buttonOk			12	//ook niet
-#define buttonVolumeUp 		37  //vol+
-#define buttonVolumeDown 	101 //vol-
-#define setAlarm 			25	//11 1-
-#define setActive			26	//12
+#define BUTTON_POWER		21
+
+#define BUTTON_UP			13	//next pos
+#define BUTTON_DOWN			22	//prev pos
+
+#define BUTTON_VOLUMEUP 	18  //vol+
+#define BUTTON_VOLUMEDOWN 	19 //vol-
+
+#define BUTTON_PLAY			23	//ok knop
+#define BUTTON_PAUZE		63	//edit time
+#define BUTTON_STOP			37	//edit alarm
+#define BUTTON_MUTE			20	//enable disable alarm
+
+typedef struct{
+	unsigned char minutes;
+	unsigned char hours;
+}time;
 
 void alarm_Init(void);
+void alarm_print(unsigned char min, unsigned char hour);
 void alarm_TurnOn(void);
 void alarm_TurnOff(void);
 void alarm_MoveLeft(void);
@@ -26,8 +36,8 @@ void alarm_SetAlarmTime(char number);
 void alarm_ToggleActive(void);
 void alarm_SetUserAnswer(char button);
 void alarm_CheckUserAnswer(void);
-void alarm_SetButton(char button);
-void alarm_setTime(int min, int hour);
+void alarm_SetButton(unsigned char button);
+void alarm_SetTime(time *Time, unsigned char button);
 void alarm_setAlarmTime(void);
 void alarm_getAlarmTime(void);
 

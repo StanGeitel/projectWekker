@@ -1,9 +1,12 @@
+#include <stdbool.h>
 #include "LPC1769.h"
 #include "timer.h"
 #include "GPIO.h"
 #include "sound.h"
 
-float volumE = 1.0;
+
+bool loop;
+float volume = 10.0;
 int dataOffset;
 audioFile *file;
 
@@ -23,9 +26,10 @@ void sound_Init(void){
 	timer_SetMCR(SAMPLE_TIMER,MR0,0x3);
 }
 
-void sound_Select(audioFile *newFile, short speed){
+void sound_Select(audioFile *newFile, short speed, unsigned char loop){
 	file = newFile;
 	dataOffset = 0;
+	loop = loop;
 	timer_SetPR(SAMPLE_TIMER, CPU_FREQ/ file->sampleRate/speed );
 }
 
@@ -33,9 +37,10 @@ void sound_Play(void){
 	timer_Enable(SAMPLE_TIMER);
 }
 
-void sound_Pauze(void){
+void sound_Stop(void){
 	timer_Disable(SAMPLE_TIMER);
 	timer_PWM_SetMR(PWM_CHANNEL, 0);
+	sound_SetAmplefier(0);
 }
 
 void sound_SetAmplefier(unsigned char amp){
@@ -54,28 +59,36 @@ void sound_SetAmplefier(unsigned char amp){
 }
 
 void sound_IncreaseVolume(void){
-	volumE += 0.1;
+	volume += 0.1;
 }
 
 void sound_DecreaseVolume(void){
-	volumE += 0.1;
+	volume += 0.1;
 }
 
 void TIMER0_IRQHandler(void){
  	timer_ClearIR(SAMPLE_TIMER);
 
- 	float data =  file->data[dataOffset];
+ 	short data =  file->data[dataOffset];
  	data -= 127;
- 	data *= volumE;	//increase amplitude
+ 	data *= volume;	//increase amplitude
  	data += 127;
 
  	//dial back the volumE if data starts clipping
  	if(data < 0){
- 		volumE -= (0 - data) / 127.0;
+ 		volume -= (0 - data) / 127.0;
  	}else if(data > PWM_RESOLUTION){
- 		volumE -= (data - PWM_RESOLUTION) / 127.0;
+ 		volume -= (data - PWM_RESOLUTION) / 127.0;
  	}
+	timer_PWM_SetMR(PWM_CHANNEL,data);
 
-	timer_PWM_SetMR(PWM_CHANNEL,(int) (data + 0.5));
- 	dataOffset == file->size - 1 ? dataOffset = 0 : dataOffset++;
+	if(dataOffset == file->size - 1){
+		if(loop){
+			dataOffset = 0;
+		}else{
+			sound_Stop();
+		}
+	}else{
+		 dataOffset++;
+	}
 }

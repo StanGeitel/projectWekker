@@ -14,9 +14,9 @@
 #define AMP3_PIN			1 << 4
 
 void sound_Init(void);
-void sound_Select(audioFile *file, short speed);
+void sound_Select(audioFile *file, short speed, unsigned char loop);
 void sound_Play(void);
-void sound_Pauze(void);
+void sound_Stop(void);
 void sound_SetAmplefier(unsigned char amp);
 void sound_IncreaseVolume(void);
 void sound_DecreaseVolume(void);
