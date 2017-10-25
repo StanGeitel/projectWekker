@@ -1,26 +1,42 @@
-#include "timer.h"
 #include "I2C.h"
-#include "LPC1769.h"
-#include "alarm.h"
 #include "RealTimeClock.h"
+#include "LPC1769.h"
+#include "timer.h"
+#include "alarm.h"
+#include "display.h"
+#include <string.h>
 
-#define RTC_TIMER 				TIMER3
 
-void RTC_Init(void)
+//23.50 -> 23.51
+
+void RTC_Init(char seconde, char minute, char hour)
 {
-	I2C_Init();
+	//I2C_Init();
+	char sec = RTC_decToBcd(seconde);
+	char min = RTC_decToBcd(minute);
+	char uur = RTC_decToBcd(hour);
+
+	I2C_WriteData(RTC_SlaveAddress, RTC_Secondes_Register, sec);
+	I2C_WriteData(RTC_SlaveAddress, RTC_Minuten_Register, min); //min is hex 0x11
+	I2C_WriteData(RTC_SlaveAddress, RTC_Hours_Register, uur);
 	RTC_SetSQWOutput(0);
 
-	timer_Init(RTC_TIMER,0);
-	timer_ClearIR(RTC_TIMER);
-	timer_SetCTCR(RTC_TIMER,FALING_EDGE,CAP1);
-	timer_SetMR(RTC_TIMER,MR0,20);
-	timer_SetMCR(RTC_TIMER,MR0,0x3);
+	PIN_SEL1 |= 1 << 16; //cap3.1 pinsel
+	PIN_SEL1 |= 1 << 17;
 
+	timer_Init(TIMER3,0);
+	timer_Disable(TIMER3);
+	timer_ClearIR(TIMER3);
+	timer_SetCTCR(TIMER3,FALING_EDGE,CAP1);
+	timer_SetMR(TIMER3,MR0,60);
+	timer_SetMCR(TIMER3,MR0,0x3);
+	T_TC(TIMER3) = 0;
 
-	timer_Enable(RTC_TIMER);
+	timer_Enable(TIMER3);
 
-	alarm_print(RTC_ReadData(RTC_Minuten_Register),RTC_ReadData(RTC_Hours_Register));
+	writeWordToDisplay(convertTimeToArr(RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Minuten_Register)), RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Hours_Register))));
+
+	//RTC_setTime(RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Minuten_Register)), RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Hours_Register)));
 }
 
 void RTC_SetSQWOutput(int Hz)
@@ -45,19 +61,19 @@ void RTC_SetSQWOutput(int Hz)
 			I2C_WriteData(RTC_SlaveAddress, RTC_Control_Register, 0x80);
 			break;
 		default:
-//			printf("RTC_SetSQWOutput(int Hz) fault! \n");
+			printf("RTC_SetSQWOutput(int Hz) fault! \n");
 			break;
 	}
 }
 
-void RTC_WriteData(unsigned char dataRegister, char data)
+void RTC_WriteData(unsigned char slaveAddress, unsigned char dataRegister, char data)
 {
-	I2C_WriteData(RTC_SlaveAddress, dataRegister, data);
+	I2C_WriteData(slaveAddress, dataRegister, data);
 }
 
-unsigned char RTC_ReadData(unsigned char dataRegister)
+unsigned char RTC_ReadData(unsigned char slaveAddress, unsigned char dataRegister)
 {
-	return I2C_ReadData(RTC_SlaveAddress, dataRegister);
+	return I2C_ReadData(slaveAddress, dataRegister);
 }
 
 char RTC_decToBcd(char val)
@@ -69,3 +85,9 @@ char RTC_bcdToDec(char val)
 {
     return (((val >> 4) * 10) + (val & 0x0F));
 }
+
+
+
+
+
+

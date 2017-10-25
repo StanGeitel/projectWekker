@@ -7,6 +7,9 @@ void I2C_Init()
 	PCONP |= 1 << 7;
 	PCLKSEL0 |= 1 << 15;
 
+	PIN_SEL1 |= 1 << 22;
+	PIN_SEL1 |= 1 << 24;
+
 	I2C_SCLH &= ~0xff;
 	I2C_SCLH |= 75;
 	I2C_SCLL &= ~0xff;

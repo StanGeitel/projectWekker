@@ -45,12 +45,15 @@ void TIMER2_IRQHandler(void){
 
 		if(data != prevData){
 			irStartTime = timer_GetCount(MILIS_TIMER);
+			printf("data: %d \n", data);
 			prevData = data;
 			alarm_SetButton(data);
 		}else if((timer_GetCount(MILIS_TIMER) - irStartTime) > IR_DELAY){
 			irStartTime = timer_GetCount(MILIS_TIMER);
+			printf("Verkeerd \n");
 			alarm_SetButton(data);
 		}
+		bit = 0;
 	}
 }
 

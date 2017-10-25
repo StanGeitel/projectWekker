@@ -5,6 +5,9 @@
 #include <time.h>
 #include <stdio.h>
 
+char problemArr[5] = {' ', ' ', ' ', ' ', ' '};
+char problemAwnser[6] = {' ', ' ', ' ', ' ', ' ', '\0'};
+
 void calculator_Init(void) {
 	srand(time(NULL));
 }
@@ -43,42 +46,47 @@ void divide(void){
 }
 
 void set_Problem(int a, int b, int c,  char operator){
-	char arr[5] = {' ','0',' ',' ','0'};
-		if(a / 10){
-			arr[0] = (char)((a / 10) + '0');
-		}
-		if(a % 10){
-			arr[1] = (char)((a % 10) + '0');
-		}
-		else if(a / 10) arr[1] = '0';
-		arr[2] = operator;
-		if(b / 10){
-			arr[3] = (char)((b / 10) + '0');
-		}
-		if(b % 10){
-			arr[4] = (char)((b % 10) + '0');
-		}
-		else if(b / 10) arr[4] = '0';
-	strcpy(problem.arr, arr);
-	char answer[5] = {'=',' ',' ',' ','0'};
-		if(c / 1000){
-			answer[1] = (char)((c / 1000) + '0');
-		}
-		if((c % 1000)/ 100){
-			answer[2] = (char)(((c % 1000)/ 100) + '0');
-		}
-		else if(c / 1000) answer[2] = '0';
-		if(((c % 1000)% 100)/ 10){
-			answer[3] = (char)((((c % 1000)% 100)/ 10) + '0');
-		}
-		else if(c / 100) answer[3] = '0';
-		if(((c % 1000)% 100)% 10){
-			answer[4] = (char)((((c % 1000)% 100)% 10) + '0');
-		}
-	strcpy(problem.answer, answer);
+	problemArr[0] = (char)(a/10) + '0';
+	problemArr[1] = (char)(a%10) + '0';
+	problemArr[2] = operator;
+	problemArr[3] = (char)(b/10) + '0';
+	problemArr[4] = (char)(b%10) + '0';
+	problemArr[5] = '\0';
+
+	int positionArr = 0;
+
+	if(c / 1000){ //1000
+		problemAwnser[positionArr] = (char)((c / 1000) + '0');
+		positionArr++;
+	}
+	if(((c % 1000)/ 100)){ //100
+		problemAwnser[positionArr] = (char)(((c % 1000)/ 100) + '0');
+		positionArr++;
+	}
+	if(((c % 1000)% 100)/ 10){ //10
+		problemAwnser[positionArr] = (char)((((c % 1000)% 100)/ 10) + '0');
+		positionArr++;
+	}
+	if(((c % 1000)% 100)% 10){ //1
+		problemAwnser[positionArr] = (char)((((c % 1000)% 100)% 10) + '0');
+		positionArr++;
+	}
+	for(positionArr ; positionArr < 5 ; positionArr++){
+		problemAwnser[positionArr] = ' ';
+	}
+	problemAwnser[5] = '\0';
+
 }
 
 int get_Random(int max) {
 	int r = rand() % (max + 1);
 	return r;
+}
+
+char* getProblemArr(){
+	return problemArr;
+}
+
+char* getProblemAwnser(){
+	return problemAwnser;
 }

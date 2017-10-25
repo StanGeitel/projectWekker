@@ -33,7 +33,7 @@ void display_Init(void){
 	memset(frontBuffer,0,7*sizeof(int));							//set whole frontBuffer low
 	memset(backBuffer,0,7*sizeof(int));	//set whole backBuffer low
 
-	RIT_Init(200000);
+	RIT_Init(20000);
 	RIT_Enable();
 }
 
@@ -57,7 +57,7 @@ void display_Set(char *message){										//write char array to backBuffer
 }
 
 void display_SetChar(char c, unsigned char pos){						//write char to backBuffer
-	while(displayUpdate);
+	//while(displayUpdate);
 	c -= 32;															//first 32 characters in the ASCII table are commands
 	for(unsigned char horizontal = 0; horizontal < 5; horizontal++){	//write the character data into the buffer
 		for(unsigned char vertical = 0; vertical < 7; vertical++){
@@ -82,7 +82,7 @@ void RIT_IRQHandler(void){
 	}else if(row == 7){													//if all row's have been written
 		V_RST(HIGH);
 		V_RST(LOW);
-		RIT_SetCOMP(200000 * 3);
+		RIT_SetCOMP(20000 * 3);
 
 		if(timer_GetCount(MILIS_TIMER) - startTime > DELAY){
 			startTime = timer_GetCount(MILIS_TIMER);
