@@ -9,6 +9,9 @@
 #include "sound.h"
 #include "timer.h"
 
+#define ALARM_IOPORT	2
+#define LED_PIN			5
+
 bool alarmActive = false;
 char screenMenu = 0; //001 is time, 010 time aanpassen, 100 alarm aanpassen
 char alarmTime[5] = {'0','0',':','0','0'};
@@ -17,19 +20,31 @@ char userAwnser[6] = {' ',' ',' ',' ',' ', '\0'};
 char temp[5] =  {'0','0',':','0','0'};
 char userAwnserCursor = 0;
 char cursorPosition = 0;
+char amplifier = 1;
 
 time timeBuffer;
 time alarmBuffer;
 
 void alarm_Init(void){
 	display_Init();
+	sound_Init();
 	calculator_Init();
+	IR_Init();
+
+	GPIO_SetDIR(ALARM_IOPORT, (0x1C | 1 << LED_PIN));
+	GPIO_Clear(ALARM_IOPORT, 1 << LED_PIN);
+	sound_Select(&totalySpies, 1, FALSE);
+	sound_Play();
 	alarmBuffer.minutes = 22;
 	I2C_Init();
 	RTC_Init(0, 0, 0);
 }
 
 void alarm_SetButton(char button){ //write alarm to rtc moet nog
+	if(button == BUTTON0){
+		button = -1;
+	}
+
 	if(alarmActive){
 		if(button < 9){
 			printf("Button ingedrukt antwoord \n");
@@ -40,12 +55,16 @@ void alarm_SetButton(char button){ //write alarm to rtc moet nog
 			if(strcmp(userAwnser, getProblemAwnser()) == 0){ //correct awnser
 				printf("User awnser correct! \n");
 				writeWordToDisplay("Nice!");
-				alarmActive = false;
+				alarm_TurnOff();
 			}else{ //incorrect awnser
 				printf("User awnser incorrect! \n");
 				writeWordToDisplay("Wrong");
 				clearUserAwnser();
 				userAwnserCursor = 0;
+				printf("Amplifier: %d \n", amplifier);
+				sound_SetAmplefier(amplifier);
+				amplifier++;
+				//sound_IncreaseVolume();
 			}
 		}else if(button == SET_PROBLEM_SCREEN){
 			writeWordToDisplay(getProblemArr());
@@ -181,6 +200,29 @@ void clearUserAwnser(){
 	userAwnser[5] = '\0';
 }
 
+void alarm_TurnOn(void){
+	printf("Alarm active! \n");
+	GPIO_Set(ALARM_IOPORT, 1 << LED_PIN);
+
+	alarmActive = true;
+	userAwnserCursor = 0;
+	clearUserAwnser();
+	gen_Problem();
+	writeWordToDisplay(getProblemArr());
+	sound_Select(&airRaid, 2, 1);
+	sound_Play();
+
+}
+
+void alarm_TurnOff(void){
+	alarmActive = false;
+	GPIO_Clear(ALARM_IOPORT, 1 << LED_PIN);
+	amplifier = 1;
+	sound_Stop();
+	sound_Select(&powerOff,1, FALSE);
+	sound_Play();
+}
+
 void TIMER3_IRQHandler(void){
 	timer_ClearIR(TIMER3);
 	char *a;
@@ -189,12 +231,7 @@ void TIMER3_IRQHandler(void){
 	int rtcUren = RTC_bcdToDec(I2C_ReadData(RTC_SlaveAddress, RTC_Hours_Register));
 
 	if(rtcMinuten == alarmBuffer.minutes && rtcUren == alarmBuffer.hours){
-		printf("Alarm active! \n");
-		alarmActive = true;
-		userAwnserCursor = 0;
-		clearUserAwnser();
-		gen_Problem();
-		writeWordToDisplay(getProblemArr());
+		alarm_TurnOn();
 	}else if(!alarmActive && screenMenu != 2 && screenMenu != 4){ //don't write time if alarm,  time- or alarm change is going
 		a = convertTimeToArr(rtcMinuten, rtcUren);
 		writeWordToDisplay(a);

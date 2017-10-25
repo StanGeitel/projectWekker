@@ -11,13 +11,13 @@ int dataOffset;
 audioFile *file;
 
 void sound_Init(void){
-	GPIO_SetDIR(AMP_IOPORT,AMP_PINS);
+	GPIO_SetDIR(AMP_IOPORT,0x1C);
 	GPIO_Set(AMP_IOPORT,AMP_PINS);
 
 	timer_Init(PWM,0);
-	timer_PWM_SetMR(MR0,PWM_RESOLUTION);
-	timer_PWM_SetMR(PWM_CHANNEL,0);
-	timer_SetMCR(PWM,MR0,0x2);
+	timer_PWM_SetMR(MR0,PWM_RESOLUTION); //set matchregister frequence
+	timer_PWM_SetMR(PWM_CHANNEL,0); //set dutycycle??
+	timer_SetMCR(PWM,MR0,0x2); //reset timer when tc is mr0
 	timer_SetMCR(PWM,PWM_CHANNEL,0x0);
 	timer_PWM_Enable(PWM_CHANNEL);
 

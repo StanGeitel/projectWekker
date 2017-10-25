@@ -8,6 +8,7 @@
 #ifndef ALARM_H_
 #define ALARM_H_
 
+#define BUTTON0				58
 #define BUTTONOK 			23 //play
 #define BUTTONLEFT 			17
 #define BUTTONRIGHT			16
@@ -37,5 +38,8 @@ char* convertTimeAndCursorToArr(int min, int hour, int position);
 
 void cursor_MoveRight(void);
 void cursor_MoveLeft(void);
+
+void alarm_TurnOn(void);
+void alarm_TurnOff(void);
 
 #endif /* ALARM_H_ */
